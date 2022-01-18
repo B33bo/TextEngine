@@ -43,7 +43,7 @@ namespace TextEngine.GameObjects
                 Game.Height++;
             }
 
-            Camera.Instance.Move(movement);
+            Move(movement);
             if (key == ConsoleKey.Escape)
                 Game.Stop();
         }
@@ -54,7 +54,7 @@ namespace TextEngine.GameObjects
 
         public override void Update()
         {
-            Game.ToolBar = $"{Game.AverageFPS}";
+            Game.ToolBar = $"{Position}";
         }
     }
 }

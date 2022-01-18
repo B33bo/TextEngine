@@ -11,10 +11,12 @@ namespace TextEngine
             Game.Width = 10;
             Game.Height = 10;
             Player player = new();
+            player.HasCollision = true;
 
             Wall wall = new();
             wall.Character = '@';
             wall.Position = new(5, 4);
+            wall.HasCollision = true;
 
             Game.AddObject(player);
             Game.AddObject(wall);

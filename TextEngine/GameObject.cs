@@ -69,8 +69,12 @@ namespace TextEngine
 
             for (int i = 0; i < Game.gameObjects.Count; i++)
             {
+                if (Game.gameObjects[i] == this)
+                    continue;
+
                 if (Game.gameObjects[i].Position != newPos)
                     continue;
+
                 //Object in the way
 
                 Game.gameObjects[i].OnCollision(this, Game.gameObjects[i].Position - Position);
@@ -79,7 +83,7 @@ namespace TextEngine
                 if (Game.gameObjects.Count <= i)
                     continue;
 
-                OnCollision(Game.gameObjects[i], Position = Game.gameObjects[i].Position);
+                OnCollision(Game.gameObjects[i], Position - Game.gameObjects[i].Position);
 
                 //OnCollision() could remove the object
                 if (Game.gameObjects.Count <= i)
