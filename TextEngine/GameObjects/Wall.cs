@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TextEngine.GameObjects
 {
-    class Wall : GameObject
+    internal class Wall : GameObject
     {
         public override void KeyPress(ConsoleKey key)
         { }

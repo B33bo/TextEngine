@@ -59,7 +59,6 @@ namespace TextEngine
         public static void Start()
         {
             stopwatch = new();
-            stopwatch.Start();
 
             RenderThread = new(() => { while (Running) Redraw(); });
             InputThread = new(() =>
@@ -80,9 +79,14 @@ namespace TextEngine
 
             RecalcBorders();
 
+            if (Camera.Instance is null)
+                AddObject(new Camera());
+
             RenderThread.Start();
             InputThread.Start();
             GameThread.Start();
+
+            stopwatch.Start();
         }
 
         private static void GameTick()
@@ -165,13 +169,19 @@ namespace TextEngine
 
             foreach (GameObject obj in gameObjects)
             {
-                Vector2D drawPos = obj.Position.ScreenClamp();
+                Vector2D drawPos = obj.Position;
+
+                if (!drawPos.InCameraBounds())
+                    continue;
+
+                if (obj.Invisible)
+                    continue;
+
+                drawPos -= Camera.Instance.Position;
 
                 StringBuilder line = new(frame[drawPos.Y]);
                 line[drawPos.X] = obj.Character;
                 frame[drawPos.Y] = line.ToString();
-
-                obj.Position = drawPos;
             }
 
             for (int i = 0; i < frame.Length; i++)

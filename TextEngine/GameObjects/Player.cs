@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace TextEngine.GameObjects
 {
-    class Player : GameObject
+    internal class Player : GameObject
     {
-        public static Player instance;
         public override void KeyPress(ConsoleKey key)
         {
             Vector2D movement = new();
@@ -44,7 +43,7 @@ namespace TextEngine.GameObjects
                 Game.Height++;
             }
 
-            Move(movement);
+            Camera.Instance.Move(movement);
             if (key == ConsoleKey.Escape)
                 Game.Stop();
         }

@@ -27,6 +27,12 @@ namespace TextEngine
             set => prefab.hasCollision = value;
         }
 
+        public bool Invisible
+        {
+            get => prefab.Invisible;
+            set => prefab.Invisible = value;
+        }
+
         public GameObject()
         {
             Character = '?';

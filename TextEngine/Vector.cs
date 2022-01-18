@@ -56,6 +56,17 @@ namespace TextEngine
             return new(newX, newY);
         }
 
+        public bool InCameraBounds()
+        {
+            if (X > Camera.Right || X < Camera.Left)
+                return false;
+
+            if (Y < Camera.Top || Y > Camera.Bottom)
+                return false;
+
+            return true;
+        }
+
         private static int WrapInt(int num, int max)
         {
             if (max <= 1)
