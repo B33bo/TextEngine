@@ -16,6 +16,8 @@ namespace TextEngine
         public byte Color;
         public byte Highlight;
 
+        public Scale scale;
+
         public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision)
         {
             this.Character = Character;
@@ -24,6 +26,7 @@ namespace TextEngine
             Invisible = false;
             Color = 0;
             Highlight = 0;
+            scale = new(1, 1);
         }
 
         public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision, bool Invisible)
@@ -34,6 +37,7 @@ namespace TextEngine
             this.Invisible = Invisible;
             Color = 0;
             Highlight = 0;
+            scale = new(1, 1);
         }
 
         public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision, bool Invisible, byte color, byte highlight)
@@ -44,6 +48,7 @@ namespace TextEngine
             this.Invisible = Invisible;
             Color = color;
             Highlight = highlight;
+            scale = new(1, 1);
         }
     }
 }

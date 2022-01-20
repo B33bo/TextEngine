@@ -62,18 +62,27 @@ namespace TextEngine
             {
                 Vector2D drawPos = obj.Position;
 
-                if (!drawPos.InCameraBounds())
-                    continue;
-
                 if (obj.Invisible)
                     continue;
 
                 drawPos -= Camera.Instance.Position;
 
-                StringBuilder line = new(frame[drawPos.Y]);
-                line[drawPos.X] = obj.Character;
-                frame[drawPos.Y] = line.ToString();
-                colours[drawPos.X, drawPos.Y] = Colors.GetColors(obj.Color, obj.Highlight);
+                for (int i = 0; i < obj.Scale.width; i++)
+                {
+                    for (int j = 0; j < obj.Scale.height; j++)
+                    {
+                        Vector2D renderPos = new(drawPos.X + i, drawPos.Y + j);
+
+                        if (!renderPos.InCameraBounds())
+                            continue;
+
+                        StringBuilder line = new(frame[renderPos.Y]);
+                        line[renderPos.X] = obj.Character;
+                        frame[renderPos.Y] = line.ToString();
+
+                        colours[renderPos.X, renderPos.Y] = Colors.GetColors(obj.Color, obj.Highlight);
+                    }
+                }
             }
 
             for (int i = 0; i < frame.Length; i++)

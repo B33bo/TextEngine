@@ -46,11 +46,18 @@ namespace TextEngine
             get => prefab.Highlight;
             set => prefab.Highlight = value;
         }
+
+        public Scale Scale
+        {
+            get => prefab.scale;
+            set => prefab.scale = value;
+        }
         #endregion
 
         public GameObject()
         {
             Character = '?';
+            Scale = new(1, 1);
         }
 
         public GameObject(char Char)
@@ -87,7 +94,10 @@ namespace TextEngine
                 if (Game.gameObjects[i] == this)
                     continue;
 
-                if (Game.gameObjects[i].Position != newPos)
+                Vector2D OtherPos = Game.gameObjects[i].Position;
+                Vector2D OtherPosBottomRight = OtherPos + Game.gameObjects[i].Scale;
+
+                if (!Scale.IntersectsWith((newPos, newPos + Scale), (OtherPos, OtherPosBottomRight)))
                     continue;
 
                 //Object in the way

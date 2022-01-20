@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//Useful link: https://stackabuse.com/how-to-print-colored-text-in-python/
+//I know it's in python, but the rules apply for c#
 namespace TextEngine
 {
     public static class Colors

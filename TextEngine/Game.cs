@@ -39,6 +39,13 @@ namespace TextEngine
             }
         }
 
+        public static float CallsPerSecond
+        {
+            get => GameLoopCalls / (stopwatch.ElapsedMilliseconds / 1000f);
+        }
+
+        public static ulong GameLoopCalls { get; private set; }
+
         private static bool Running = true;
         private static bool AskingQuestion = false;
 
@@ -86,6 +93,7 @@ namespace TextEngine
             {
                 for (int i = 0; i < gameObjects.Count; i++)
                 {
+                    GameLoopCalls++;
                     GameObject gm = gameObjects[i];
                     if (gm == null)
                         continue;
@@ -111,8 +119,10 @@ namespace TextEngine
 
         public static string Ask()
         {
+            stopwatch.Stop();
             AskingQuestion = true;
             string answer = Console.ReadLine();
+            stopwatch.Start();
 
             string spaces = "";
             for (int i = 0; i < answer.Length; i++)

@@ -36,12 +36,15 @@ namespace TextEngine.GameObjects
 
             if (key == ConsoleKey.Q)
             {
-                Color--;
+                Scale = new(Scale.width, Scale.height + 1);
             }
             if (key == ConsoleKey.E)
             {
-                Color++;
+                Scale = new(Scale.width + 1, Scale.height);
             }
+
+            if (key == ConsoleKey.C)
+                Color++;
 
             Move(movement);
             if (key == ConsoleKey.Escape)
@@ -54,7 +57,7 @@ namespace TextEngine.GameObjects
 
         public override void Update()
         {
-            Game.ToolBar = $"{Position} {Render.AverageFPS}";
+            Game.ToolBar = $"{Position} {Render.AverageFPS,-10} {Game.CallsPerSecond}";
         }
     }
 }

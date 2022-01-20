@@ -40,6 +40,16 @@ namespace TextEngine
             return !(a == b);
         }
 
+        public static Vector2D operator +(Vector2D a, Scale scale)
+        {
+            return new(a.X + scale.width - 1, a.Y + scale.height - 1);
+        }
+
+        public static Vector2D operator -(Vector2D a, Scale scale)
+        {
+            return new(a.X - (scale.width - 1), a.Y - (scale.height - 1));
+        }
+
         public Vector2D ScreenWrap()
         {
             int newX = X;
