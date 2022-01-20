@@ -11,7 +11,6 @@ namespace TextEngine
 {
     public static class Game
     {
-        public static ulong FrameCount { get; private set; }
         public static string ToolBar = "";
 
         private static Thread RenderThread;
@@ -26,7 +25,7 @@ namespace TextEngine
             set
             {
                 width = value;
-                RecalcBordersNextFrame = true;
+                Render.RecalcBordersNextFrame = true;
             }
         }
 
@@ -36,7 +35,7 @@ namespace TextEngine
             set
             {
                 height = value;
-                RecalcBordersNextFrame = true;
+                Render.RecalcBordersNextFrame = true;
             }
         }
 
@@ -44,25 +43,17 @@ namespace TextEngine
         private static bool AskingQuestion = false;
 
         public static List<GameObject> gameObjects = new();
-        private static string emptyBar;
-
-        static int previousToolbarLen = 0;
 
         public static Stopwatch stopwatch;
         public static event GameQuitHandler OnQuitGame;
-
-        public static float AverageFPS
-        {
-            get => FrameCount / (stopwatch.ElapsedMilliseconds / 1000f);
-        }
 
         public static void Start()
         {
             stopwatch = new();
 
-            RenderThread = new(() => { while (Running) Redraw(); });
+            RenderThread = new(() => { while (Running) Render.Redraw(); });
             InputThread = new(() =>
-            { 
+            {
                 while (Running)
                 {
                     var KeyPress = Console.ReadKey(true).Key;
@@ -77,7 +68,7 @@ namespace TextEngine
 
             Console.Clear();
 
-            RecalcBorders();
+            Render.RecalcBorders();
 
             if (Camera.Instance is null)
                 AddObject(new Camera());
@@ -103,95 +94,6 @@ namespace TextEngine
 
                 WaitForAnswer();
             }
-        }
-
-        private static bool RecalcBordersNextFrame = false;
-        private static void RecalcBorders()
-        {
-            Console.Clear();
-            Console.CursorTop = 0;
-            Console.CursorLeft = 0;
-            emptyBar = "";
-            string dashesAtBottom = ""; //The - at the bottom of the screen
-
-            if (width <= 0 || height <= 0)
-                return;
-
-            for (int i = 0; i < width; i++)
-            {
-                emptyBar += " ";
-                dashesAtBottom += "-";
-            }
-
-            for (int i = 0; i < height; i++)
-            {
-                Console.WriteLine(emptyBar + "|");
-            }
-            Console.WriteLine(dashesAtBottom + "|");
-        }
-
-        private static void Redraw()
-        {
-            FrameCount++;
-
-            int newToolbarLen = ToolBar.Length;
-
-            while (previousToolbarLen > ToolBar.Length)
-            {
-                ToolBar += " ";
-            }
-
-            previousToolbarLen = newToolbarLen;
-
-            if (height <= -3)
-                return;
-
-            Console.CursorTop = height + 2;
-            Console.CursorLeft = 0;
-            Console.Write(ToolBar + " ");
-
-            if (RecalcBordersNextFrame)
-            {
-                RecalcBordersNextFrame = false;
-                RecalcBorders();
-            }
-
-            if (width <= 0 || height <= 0)
-                return;
-
-            string[] frame = new string[height];
-            Console.CursorVisible = false;
-
-            for (int i = 0; i < frame.Length; i++)
-            {
-                frame[i] = emptyBar;
-            }
-
-            foreach (GameObject obj in gameObjects)
-            {
-                Vector2D drawPos = obj.Position;
-
-                if (!drawPos.InCameraBounds())
-                    continue;
-
-                if (obj.Invisible)
-                    continue;
-
-                drawPos -= Camera.Instance.Position;
-
-                StringBuilder line = new(frame[drawPos.Y]);
-                line[drawPos.X] = obj.Character;
-                frame[drawPos.Y] = line.ToString();
-            }
-
-            for (int i = 0; i < frame.Length; i++)
-            {
-                Console.CursorTop = i;
-                Console.CursorLeft = 0;
-                Console.Write(frame[i]);
-            }
-
-            WaitForAnswer();
         }
 
         public static void Stop()
@@ -226,7 +128,7 @@ namespace TextEngine
             return answer;
         }
 
-        private static void WaitForAnswer()
+        internal static void WaitForAnswer()
         {
             if (!AskingQuestion)
                 return;

@@ -36,11 +36,11 @@ namespace TextEngine.GameObjects
 
             if (key == ConsoleKey.Q)
             {
-                Game.Height--;
+                Color--;
             }
             if (key == ConsoleKey.E)
             {
-                Game.Height++;
+                Color++;
             }
 
             Move(movement);
@@ -54,7 +54,7 @@ namespace TextEngine.GameObjects
 
         public override void Update()
         {
-            Game.ToolBar = $"{Position}";
+            Game.ToolBar = $"{Position} {Render.AverageFPS}";
         }
     }
 }

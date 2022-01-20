@@ -9,6 +9,8 @@ namespace TextEngine
     public abstract class GameObject
     {
         private GameObjectPrefab prefab;
+
+        #region Properties
         public char Character
         {
             get => prefab.Character;
@@ -32,6 +34,19 @@ namespace TextEngine
             get => prefab.Invisible;
             set => prefab.Invisible = value;
         }
+
+        public byte Color
+        {
+            get => prefab.Color;
+            set => prefab.Color = value;
+        }
+
+        public byte Highlight
+        {
+            get => prefab.Highlight;
+            set => prefab.Highlight = value;
+        }
+        #endregion
 
         public GameObject()
         {

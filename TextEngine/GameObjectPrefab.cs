@@ -13,12 +13,17 @@ namespace TextEngine
         public bool hasCollision;
         public bool Invisible;
 
+        public byte Color;
+        public byte Highlight;
+
         public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision)
         {
             this.Character = Character;
             position = pos;
             this.hasCollision = hasCollision;
             Invisible = false;
+            Color = 0;
+            Highlight = 0;
         }
 
         public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision, bool Invisible)
@@ -27,6 +32,18 @@ namespace TextEngine
             position = pos;
             this.hasCollision = hasCollision;
             this.Invisible = Invisible;
+            Color = 0;
+            Highlight = 0;
+        }
+
+        public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision, bool Invisible, byte color, byte highlight)
+        {
+            this.Character = Character;
+            position = pos;
+            this.hasCollision = hasCollision;
+            this.Invisible = Invisible;
+            Color = color;
+            Highlight = highlight;
         }
     }
 }
