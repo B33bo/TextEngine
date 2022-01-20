@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <StartupObject></StartupObject>
-    <Version>1.0.0.10</Version>
-    <AssemblyVersion>1.0.0.10</AssemblyVersion>
-    <FileVersion>1.0.0.10</FileVersion>
+    <Version>1.1.0.1</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.1</FileVersion>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 

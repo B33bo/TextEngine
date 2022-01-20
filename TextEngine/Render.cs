@@ -74,7 +74,7 @@ namespace TextEngine
                         //Add the current part of the object to it's position. This is the Game cell we are drawing
                         Vector2D renderPos = new(drawPos.X + i, drawPos.Y + j);
 
-                        if (!renderPos.InCameraBounds())
+                        if (!renderPos.InScreen())
                             //It's offscreen
                             continue;
 

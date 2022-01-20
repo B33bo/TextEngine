@@ -77,6 +77,17 @@ namespace TextEngine
             return true;
         }
 
+        public bool InScreen()
+        {
+            if (X >= Game.Width || X < 0)
+                return false;
+
+            if (Y < 0 || Y >= Game.Height)
+                return false;
+
+            return true;
+        }
+
         private static int WrapInt(int num, int max)
         {
             if (max <= 1)

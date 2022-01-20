@@ -44,6 +44,9 @@ namespace TextEngine.GameObjects
                 Scale = new(Scale.width + 1, Scale.height);
             }
 
+            if (key == ConsoleKey.H)
+                Highlight++;
+
             if (key == ConsoleKey.C)
                 Color++;
 
@@ -53,7 +56,7 @@ namespace TextEngine.GameObjects
             if (key == ConsoleKey.K)
                 Game.Width += 2;
 
-            Move(movement);
+            Camera.Instance.Move(movement);
             if (key == ConsoleKey.Escape)
                 Game.Stop();
         }

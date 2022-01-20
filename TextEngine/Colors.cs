@@ -16,8 +16,6 @@ namespace TextEngine
         /// <summary>This will cease having the funky colours</summary>
         public const string End = "\x1b[0;0m";
 
-        public const string Red = "";
-
         /// <summary>Get the color from the specfic numbers (0-255)
         /// https://stackabuse.s3.amazonaws.com/media/how-to-print-colored-text-in-python-07.jpg </summary>
         /// <param name="color"></param>
@@ -42,6 +40,21 @@ namespace TextEngine
                 return "";
 
             return $"{Start}48;5;{color}m";
+        }
+
+        public enum DefaultColors
+        {
+            Default = 0,
+            Red = 1,
+            Green = 2,
+            Yellow = 3, 
+            Blue = 4,
+            Purple = 5,
+            Cyan = 6,
+            White = 7,
+            Grey = 8,
+            Pink = 9,
+            Black = 16,
         }
     }
 }
