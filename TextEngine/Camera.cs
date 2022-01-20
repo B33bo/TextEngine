@@ -7,6 +7,8 @@ using TextEngine;
 
 namespace TextEngine
 {
+    //"Camera" is an empty marker for where the camera should be stored. Moving it will move the camera
+    //Changing the scale has no effect. Use Game.Width & Game.Height
     public class Camera : GameObject
     {
         public static Camera Instance { get; private set; }

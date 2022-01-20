@@ -75,11 +75,14 @@ namespace TextEngine
 
         public static bool IntersectsWith((Vector2D topLeft, Vector2D BottomRight) a, (Vector2D topLeft, Vector2D BottomRight) b)
         {
+            //One square is above the other
             if (a.topLeft.Y > b.BottomRight.Y || b.topLeft.Y > a.BottomRight.Y)
                 return false;
 
+            //One square is beside the other
             if (a.topLeft.X > b.BottomRight.X || b.topLeft.X > a.BottomRight.X)
                 return false;
+
             return true;
         }
     }

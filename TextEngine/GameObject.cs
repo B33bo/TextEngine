@@ -10,6 +10,7 @@ namespace TextEngine
     {
         private GameObjectPrefab prefab;
 
+        //Nick all properties from prefab
         #region Properties
         public char Character
         {
@@ -56,65 +57,47 @@ namespace TextEngine
 
         public GameObject()
         {
+            //Default values
             Character = '?';
             Scale = new(1, 1);
         }
 
-        public GameObject(char Char)
-        {
-            Character = Char;
-        }
-
-        public GameObject(char Char, Vector2D pos)
-        {
-            Character = Char;
-            Position = pos;
-        }
-
-        public GameObject(char Char, Vector2D pos, bool HasCollision)
-        {
-            Character = Char;
-            Position = pos;
-            this.HasCollision = HasCollision;
-        }
-
-        public GameObject(GameObjectPrefab prefab)
-        {
-            Character = prefab.Character;
-            Position = prefab.position;
-            HasCollision = prefab.hasCollision;
-        }
-
+        /// <summary>
+        /// The move function will move an object in any direction
+        /// It has the bonus of handling physics so if there's a block in the way
+        /// it won't move
+        /// </summary>
+        /// <param name="movementVector">Movement</param>
         public void Move(Vector2D movementVector)
         {
             Vector2D newPos = Position + movementVector;
 
-            for (int i = 0; i < Game.gameObjects.Count; i++)
+            for (int i = 0; i < Game.GameObjects.Count; i++)
             {
-                if (Game.gameObjects[i] == this)
+                if (Game.GameObjects[i] == this)
                     continue;
 
-                Vector2D OtherPos = Game.gameObjects[i].Position;
-                Vector2D OtherPosBottomRight = OtherPos + Game.gameObjects[i].Scale;
+                Vector2D OtherPos = Game.GameObjects[i].Position;
+                Vector2D OtherPosBottomRight = OtherPos + Game.GameObjects[i].Scale;
 
                 if (!Scale.IntersectsWith((newPos, newPos + Scale), (OtherPos, OtherPosBottomRight)))
                     continue;
 
                 //Object in the way
 
-                Game.gameObjects[i].OnCollision(this, Game.gameObjects[i].Position - Position);
+                Game.GameObjects[i].OnCollision(this, Game.GameObjects[i].Position - Position);
 
                 //OnCollision() could remove the object
-                if (Game.gameObjects.Count <= i)
+                if (Game.GameObjects.Count <= i)
                     continue;
 
-                OnCollision(Game.gameObjects[i], Position - Game.gameObjects[i].Position);
+                OnCollision(Game.GameObjects[i], Position - Game.GameObjects[i].Position);
 
                 //OnCollision() could remove the object
-                if (Game.gameObjects.Count <= i)
+                if (Game.GameObjects.Count <= i)
                     continue;
 
-                if (Game.gameObjects[i].HasCollision && HasCollision)
+                if (Game.GameObjects[i].HasCollision && HasCollision)
                     //Both objects have collision
                     return;
             }
@@ -124,7 +107,7 @@ namespace TextEngine
 
         public void Destroy()
         {
-            Game.gameObjects.Remove(this);
+            Game.GameObjects.Remove(this);
         }
 
         public abstract void OnCollision(GameObject collision, Vector2D displacement);

@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace TextEngine
 {
+    //'Game' is used as a class to handle functions and stuff
     public static class Game
     {
-        public static string ToolBar = "";
+        public static string ToolBar { get; set; } = "";
 
         private static Thread RenderThread;
         private static Thread InputThread;
@@ -19,6 +20,7 @@ namespace TextEngine
 
         private static int width, height;
 
+        //Use a property for width and height so it can change scale dynamically
         public static int Width
         {
             get => width;
@@ -39,9 +41,10 @@ namespace TextEngine
             }
         }
 
+        //It's like FPS but for how many calls the update methods recieve
         public static float CallsPerSecond
         {
-            get => GameLoopCalls / (stopwatch.ElapsedMilliseconds / 1000f);
+            get => GameLoopCalls / (Timer.ElapsedMilliseconds / 1000f);
         }
 
         public static ulong GameLoopCalls { get; private set; }
@@ -49,32 +52,41 @@ namespace TextEngine
         private static bool Running = true;
         private static bool AskingQuestion = false;
 
-        public static List<GameObject> gameObjects = new();
+        public static List<GameObject> GameObjects
+        {
+            get; private set;
+        } = new();
 
-        public static Stopwatch stopwatch;
+        public static Stopwatch Timer { get; private set; }
         public static event GameQuitHandler OnQuitGame;
 
         public static void Start()
         {
-            stopwatch = new();
+            Timer = new();
 
+            //All render thread needs to do is call redraw
             RenderThread = new(() => { while (Running) Render.Redraw(); });
+
+            //Input thread gets the user key press
             InputThread = new(() =>
             {
                 while (Running)
                 {
                     var KeyPress = Console.ReadKey(true).Key;
-                    for (int i = 0; i < gameObjects.Count; i++)
+                    for (int i = 0; i < GameObjects.Count; i++)
                     {
-                        gameObjects[i].KeyPress(KeyPress);
+                        GameObjects[i].KeyPress(KeyPress);
                     }
                     WaitForAnswer();
                 }
             });
+
+            //GameThread is used to call each object's update method
             GameThread = new(() => { while (Running) GameTick(); });
 
             Console.Clear();
 
+            //Corners of screen
             Render.RecalcBorders();
 
             if (Camera.Instance is null)
@@ -84,19 +96,21 @@ namespace TextEngine
             InputThread.Start();
             GameThread.Start();
 
-            stopwatch.Start();
+            Timer.Start();
         }
 
         private static void GameTick()
         {
             while (Running)
             {
-                for (int i = 0; i < gameObjects.Count; i++)
+                for (int i = 0; i < GameObjects.Count; i++)
                 {
                     GameLoopCalls++;
-                    GameObject gm = gameObjects[i];
+                    GameObject gm = GameObjects[i];
+
                     if (gm == null)
                         continue;
+                    
                     gm.Update();
                 }
 
@@ -114,16 +128,18 @@ namespace TextEngine
 
         public static void AddObject(GameObject obj)
         {
-            gameObjects.Add(obj);
+            GameObjects.Add(obj);
         }
 
+        /// <summary> Stop the game and ask a question</summary>
         public static string Ask()
         {
-            stopwatch.Stop();
+            Timer.Stop(); //so the FPS isn't incorrect
             AskingQuestion = true;
             string answer = Console.ReadLine();
-            stopwatch.Start();
+            Timer.Start();
 
+            //So you don't see your answer ages after
             string spaces = "";
             for (int i = 0; i < answer.Length; i++)
             {
@@ -138,6 +154,8 @@ namespace TextEngine
             return answer;
         }
 
+        /// <summary>This method is called so you don't accidentally render something while
+        /// asking a question</summary>
         internal static void WaitForAnswer()
         {
             if (!AskingQuestion)

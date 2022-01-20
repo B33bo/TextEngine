@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TextEngine.GameObjects
 {
+    //Player is only used for testing purposes
     internal class Player : GameObject
     {
         public override void KeyPress(ConsoleKey key)
@@ -46,6 +47,12 @@ namespace TextEngine.GameObjects
             if (key == ConsoleKey.C)
                 Color++;
 
+            if (key == ConsoleKey.L)
+                Game.ToolBar = "you said: " + Game.Ask();
+
+            if (key == ConsoleKey.K)
+                Game.Width += 2;
+
             Move(movement);
             if (key == ConsoleKey.Escape)
                 Game.Stop();
@@ -57,7 +64,7 @@ namespace TextEngine.GameObjects
 
         public override void Update()
         {
-            Game.ToolBar = $"{Position} {Render.AverageFPS,-10} {Game.CallsPerSecond}";
+            //Game.ToolBar = $"{Position} {Render.AverageFPS,-10} {Game.CallsPerSecond}";
         }
     }
 }

@@ -8,15 +8,16 @@ namespace TextEngine
 {
     public struct GameObjectPrefab
     {
-        public char Character;
-        public Vector2D position;
-        public bool hasCollision;
-        public bool Invisible;
+        public char Character;      //The look of the object
+        public bool Invisible;      //Will not be rendered
 
-        public byte Color;
-        public byte Highlight;
+        public byte Color;          //The color
+        public byte Highlight;      //The highlight
 
-        public Scale scale;
+        public Vector2D position;   //The position
+        public Scale scale;         //The Scale
+
+        public bool hasCollision;   //If this is true, it cannot interact with other collision objects
 
         public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision)
         {

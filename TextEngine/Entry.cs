@@ -3,6 +3,7 @@ using TextEngine.GameObjects;
 
 namespace TextEngine
 {
+    //EntryPoint is only used for testing purposes.
     internal class EntryPoint
     {
         public static int Score = 0;
