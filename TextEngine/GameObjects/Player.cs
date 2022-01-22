@@ -59,6 +59,9 @@ namespace TextEngine.GameObjects
             if (key == ConsoleKey.K)
                 Game.Screen -= new Scale(0, 2);
 
+            if (key == ConsoleKey.J)
+                Game.Stop();
+
             Move(movement);
             Camera.Instance.Position = Position;
             if (key == ConsoleKey.Escape)

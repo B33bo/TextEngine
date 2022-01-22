@@ -80,32 +80,39 @@ namespace TextEngine
 
             for (int i = 0; i < Game.GameObjects.Count; i++)
             {
-                if (Game.GameObjects[i] == this)
+                try
+                {
+                    if (Game.GameObjects[i] == this)
+                        continue;
+
+                    Vector2D OtherPos = Game.GameObjects[i].Position;
+                    Vector2D OtherPosBottomRight = OtherPos + Game.GameObjects[i].Scale;
+
+                    if (!Scale.IntersectsWith((newPos, newPos + Scale), (OtherPos, OtherPosBottomRight)))
+                        continue;
+
+                    //Object in the way
+
+                    Game.GameObjects[i].OnCollision(this, Game.GameObjects[i].Position - Position);
+
+                    //OnCollision() could remove the object
+                    if (Game.GameObjects.Count <= i)
+                        continue;
+
+                    OnCollision(Game.GameObjects[i], Position - Game.GameObjects[i].Position);
+
+                    //OnCollision() could remove the object
+                    if (Game.GameObjects.Count <= i)
+                        continue;
+
+                    if (Game.GameObjects[i].HasCollision && HasCollision)
+                        //Both objects have collision
+                        return;
+                }
+                catch (NullReferenceException)
+                {
                     continue;
-
-                Vector2D OtherPos = Game.GameObjects[i].Position;
-                Vector2D OtherPosBottomRight = OtherPos + Game.GameObjects[i].Scale;
-
-                if (!Scale.IntersectsWith((newPos, newPos + Scale), (OtherPos, OtherPosBottomRight)))
-                    continue;
-
-                //Object in the way
-
-                Game.GameObjects[i].OnCollision(this, Game.GameObjects[i].Position - Position);
-
-                //OnCollision() could remove the object
-                if (Game.GameObjects.Count <= i)
-                    continue;
-
-                OnCollision(Game.GameObjects[i], Position - Game.GameObjects[i].Position);
-
-                //OnCollision() could remove the object
-                if (Game.GameObjects.Count <= i)
-                    continue;
-
-                if (Game.GameObjects[i].HasCollision && HasCollision)
-                    //Both objects have collision
-                    return;
+                }
             }
 
             Position += movementVector;

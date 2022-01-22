@@ -57,9 +57,11 @@ namespace TextEngine
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return;
 
+            Game.ThreadsRunning++;
+
             Note[] notes = (Note[])noteObjs;
 
-            while (true)
+            while (Game.Running)
             {
                 for (int i = 0; i < notes.Length; i++)
                 {
@@ -72,6 +74,8 @@ namespace TextEngine
                     Console.Beep(notes[i].Frequency, notes[i].Duration);
                 }
             }
+
+            Game.ThreadsRunning--;
         }
 
         private static void Play(object noteObj)
@@ -79,9 +83,11 @@ namespace TextEngine
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return;
 
+            Game.ThreadsRunning++;
             Note note = (Note)noteObj;
 
             Console.Beep(note.Frequency, note.Duration);
+            Game.ThreadsRunning--;
         }
     }
 

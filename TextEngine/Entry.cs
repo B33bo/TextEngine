@@ -40,6 +40,8 @@ namespace TextEngine
             Game.AddObject(player);
             Game.AddObject(wall);
 
+            Game.OnQuitGame += () => Console.WriteLine("Ur trash");
+
             Game.Start();
         }
 

@@ -18,6 +18,8 @@ namespace TextEngine
         private static Thread InputThread;
         private static Thread GameThread;
 
+        internal static int ThreadsRunning = 0;
+
         private static Scale scale;
 
         //Use a property for width and height so it can change scale dynamically
@@ -40,7 +42,7 @@ namespace TextEngine
 
         public static ulong GameLoopCalls { get; private set; }
 
-        private static bool Running = true;
+        internal static bool Running = true;
         private static bool AskingQuestion = false;
 
         public static List<GameObject> GameObjects
@@ -53,14 +55,16 @@ namespace TextEngine
 
         public static void Start()
         {
+            Console.OutputEncoding = new UnicodeEncoding();
             Timer = new();
 
             //All render thread needs to do is call redraw
-            RenderThread = new(() => { while (Running) Render.Redraw(); });
+            RenderThread = new(() => { ThreadsRunning++; while (Running) Render.Redraw(); ThreadsRunning--; });
 
             //Input thread gets the user key press
             InputThread = new(() =>
             {
+                ThreadsRunning++;
                 while (Running)
                 {
                     var KeyPress = Console.ReadKey(true).Key;
@@ -70,10 +74,11 @@ namespace TextEngine
                     }
                     WaitForAnswer();
                 }
+                ThreadsRunning--;
             });
 
             //GameThread is used to call each object's update method
-            GameThread = new(() => { while (Running) GameTick(); });
+            GameThread = new(() => {ThreadsRunning++; while (Running) GameTick(); ThreadsRunning--; });
 
             Console.Clear();
 
@@ -111,10 +116,27 @@ namespace TextEngine
 
         public static void Stop()
         {
+            Running = false;
+
+            try
+            {
+                GameThread.Abort();
+                ThreadsRunning--;
+            }
+            catch (PlatformNotSupportedException)
+            {
+                GameThread = null;
+                ThreadsRunning--;
+            }
+
+            while (ThreadsRunning != 0)
+            {
+                //Wait
+            }
+
+            Console.Clear();
             if (OnQuitGame != null)
                 OnQuitGame.Invoke();
-
-            Running = false;
         }
 
         public static void AddObject(GameObject obj)

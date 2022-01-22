@@ -180,7 +180,7 @@ namespace TextEngine
             for (int i = 0; i < Game.Screen.width; i++)
             {
                 emptyBar += " ";
-                dashesAtBottom += "-";
+                dashesAtBottom += "_";
             }
 
             string clearEdges = "";
