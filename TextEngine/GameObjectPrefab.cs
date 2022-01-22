@@ -8,7 +8,8 @@ namespace TextEngine
 {
     public struct GameObjectPrefab
     {
-        public char Character;      //The look of the object
+        //public char Character;      //The look of the object
+        public Texture texture;
         public bool Invisible;      //Will not be rendered
 
         public byte Color;          //The color
@@ -19,9 +20,9 @@ namespace TextEngine
 
         public bool hasCollision;   //If this is true, it cannot interact with other collision objects
 
-        public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision)
+        public GameObjectPrefab(Texture texture, Vector2D pos, bool hasCollision)
         {
-            this.Character = Character;
+            this.texture = texture;
             position = pos;
             this.hasCollision = hasCollision;
             Invisible = false;
@@ -30,9 +31,9 @@ namespace TextEngine
             scale = new(1, 1);
         }
 
-        public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision, bool Invisible)
+        public GameObjectPrefab(Texture texture, Vector2D pos, bool hasCollision, bool Invisible)
         {
-            this.Character = Character;
+            this.texture = texture;
             position = pos;
             this.hasCollision = hasCollision;
             this.Invisible = Invisible;
@@ -41,9 +42,9 @@ namespace TextEngine
             scale = new(1, 1);
         }
 
-        public GameObjectPrefab(char Character, Vector2D pos, bool hasCollision, bool Invisible, byte color, byte highlight)
+        public GameObjectPrefab(Texture texture, Vector2D pos, bool hasCollision, bool Invisible, byte color, byte highlight)
         {
-            this.Character = Character;
+            this.texture = texture;
             position = pos;
             this.hasCollision = hasCollision;
             this.Invisible = Invisible;

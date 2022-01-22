@@ -18,25 +18,16 @@ namespace TextEngine
         private static Thread InputThread;
         private static Thread GameThread;
 
-        private static int width, height;
+        private static Scale scale;
 
         //Use a property for width and height so it can change scale dynamically
-        public static int Width
+        public static Scale Screen
         {
-            get => width;
+            get => scale;
             set
             {
-                width = value;
-                Render.RecalcBordersNextFrame = true;
-            }
-        }
-
-        public static int Height
-        {
-            get => height;
-            set
-            {
-                height = value;
+                Render.oldScale = scale;
+                scale = value;
                 Render.RecalcBordersNextFrame = true;
             }
         }
@@ -146,7 +137,7 @@ namespace TextEngine
                 spaces += " ";
             }
 
-            Console.CursorTop = height + 3;
+            Console.CursorTop = Screen.height + 3;
             Console.CursorLeft = 0;
             Console.Write(spaces);
 
@@ -162,7 +153,7 @@ namespace TextEngine
                 return;
 
             Console.CursorLeft = 0;
-            Console.CursorTop = height + 3;
+            Console.CursorTop = scale.height + 3;
 
             while (AskingQuestion)
             {

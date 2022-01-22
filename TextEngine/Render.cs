@@ -20,11 +20,13 @@ namespace TextEngine
         static int previousToolbarLen = 0;
         internal static bool RecalcBordersNextFrame = false;
 
+        internal static Scale oldScale;
+
         internal static void Redraw()
         {
             FrameCount++;
 
-            if (Game.Height <= -3)
+            if (Game.Screen.height <= -3)
                 //Too low to render toolbar
                 return;
 
@@ -36,7 +38,7 @@ namespace TextEngine
                 RecalcBorders();
             }
 
-            if (Game.Width <= 0 || Game.Height <= 0)
+            if (Game.Screen.width <= 0 || Game.Screen.height <= 0)
                 //No more rendering to do, game has like no height/width
                 return;
 
@@ -48,7 +50,7 @@ namespace TextEngine
             //The reason it doesn't add the colour string outright is because it sets the frame with indexing
             //and changing the value will mess it all up
 
-            string[] frame = new string[Game.Height];
+            string[] frame = new string[Game.Screen.height];
             Console.CursorVisible = false;
 
             for (int i = 0; i < frame.Length; i++)
@@ -57,7 +59,7 @@ namespace TextEngine
             }
 
             //Stores colour data
-            string[,] colours = new string[Game.Width, Game.Height];
+            (byte c, byte h)[,] colours = new (byte, byte)[Game.Screen.width, Game.Screen.height];
 
             foreach (GameObject obj in Game.GameObjects)
             {
@@ -79,10 +81,11 @@ namespace TextEngine
                             continue;
 
                         StringBuilder line = new(frame[renderPos.Y]);
-                        line[renderPos.X] = obj.Character;
+                        line[renderPos.X] = obj.Texture[i, j].Character;
                         frame[renderPos.Y] = line.ToString();
 
-                        colours[renderPos.X, renderPos.Y] = Colors.GetColors(obj.Color, obj.Highlight);
+                        colours[renderPos.X, renderPos.Y] = (obj.Texture[i, j].Color, obj.Texture[i, j].Highlight);
+                        //Colors.GetColors(obj.Texture[i, j].Color, obj.Texture[i, j].Highlight);
                     }
                 }
             }
@@ -93,8 +96,9 @@ namespace TextEngine
             {
                 Console.CursorTop = i;
                 Console.CursorLeft = 0;
-                Console.Write(GetFrame(frame[i], colours, i));
+                //Console.Write(GetLine(frame[i], colours, i));
             }
+            //Write(frame, colours);
 
             Game.WaitForAnswer();
         }
@@ -120,14 +124,18 @@ namespace TextEngine
 
             previousToolbarLen = newToolbarLen;
 
-            Console.CursorTop = Game.Height + 2;
+            Console.CursorTop = Game.Screen.height + 2;
             Console.CursorLeft = 0;
             Console.Write(Game.ToolBar);
         }
 
-        private static string GetFrame(string UncolouredFrame, string[,] ColourData, int Ypos)
+        private static string GetLine(string UncolouredFrame, string[,] ColourData, int Ypos)
         {
             //Merge colourData and the frame
+
+            if (UncolouredFrame.Length != ColourData.GetLength(0))
+                return "";
+
             string s = "";
             for (int i = 0; i < UncolouredFrame.Length; i++)
             {
@@ -145,31 +153,60 @@ namespace TextEngine
             return s;
         }
 
+        static void Write(string[] Lines, (byte c, byte h)[,] ColourData)
+        {
+            for (int i = 0; i < Lines.Length; i++)
+            {
+                for (int j = 0; j < Lines[i].Length; j++)
+                {
+                    Console.SetCursorPosition(j, i);
+                    (int c, int h) currentColourData = ColourData[i, j];
+
+                    Console.ForegroundColor = currentColourData.c == 0 ? ConsoleColor.White : (ConsoleColor)currentColourData.c;
+                    Console.BackgroundColor = currentColourData.h == 0 ? ConsoleColor.Black : (ConsoleColor)currentColourData.h;
+
+                    Console.Write(Lines[i][j]);
+                }
+            }
+        }
+
         /// <summary>
         /// Recalculates the edges of the screen
         /// </summary>
         internal static void RecalcBorders()
         {
+            if (oldScale.height > Game.Screen.height)
+                Console.Clear();
+
             Console.CursorTop = 0;
             Console.CursorLeft = 0;
             emptyBar = "";
             string dashesAtBottom = ""; //The ----- at the bottom of the screen
 
-            if (Game.Width <= 0 || Game.Height <= 0)
+            if (Game.Screen.width < 0 || Game.Screen.height < 0)
+            {
+                Console.Clear();
                 return;
+            }
 
-            for (int i = 0; i < Game.Width; i++)
+            for (int i = 0; i < Game.Screen.width; i++)
             {
                 emptyBar += " ";
                 dashesAtBottom += "-";
             }
 
-            for (int i = 0; i < Game.Height; i++)
+            string clearEdges = "";
+            for (int i = Game.Screen.width; i < oldScale.width; i++)
+            {
+                clearEdges += " ";
+            }
+
+            for (int i = 0; i < Game.Screen.height; i++)
             {
                 Console.CursorTop = i;
-                Console.WriteLine(emptyBar + "|");
+                Console.WriteLine(emptyBar + "|" + clearEdges);
             }
-            Console.WriteLine(dashesAtBottom + "|");
+            Console.WriteLine(dashesAtBottom + "|" + clearEdges);
         }
     }
 }

@@ -12,10 +12,16 @@ namespace TextEngine
 
         //Nick all properties from prefab
         #region Properties
+        public Texture Texture
+        {
+            get => prefab.texture;
+            set => prefab.texture = value;
+        }
+
         public char Character
         {
-            get => prefab.Character;
-            set => prefab.Character = value;
+            get => prefab.texture[0, 0].Character;
+            set => prefab.texture = new(value);
         }
 
         public Vector2D Position

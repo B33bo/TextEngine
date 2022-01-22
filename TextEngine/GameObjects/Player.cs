@@ -11,6 +11,7 @@ namespace TextEngine.GameObjects
     {
         public override void KeyPress(ConsoleKey key)
         {
+            HasCollision = false;
             Vector2D movement = new();
 
             if (key == ConsoleKey.W)
@@ -37,11 +38,13 @@ namespace TextEngine.GameObjects
 
             if (key == ConsoleKey.Q)
             {
-                Scale = new(Scale.width, Scale.height + 1);
+                Wall.instance.Scale += new Scale(0, 1);
+                //Scale += new Scale(0, 1);
             }
             if (key == ConsoleKey.E)
             {
-                Scale = new(Scale.width + 1, Scale.height);
+                //Scale += new Scale(1, 0);
+                Wall.instance.Scale += new Scale(1, 0);
             }
 
             if (key == ConsoleKey.H)
@@ -54,9 +57,10 @@ namespace TextEngine.GameObjects
                 Game.ToolBar = "you said: " + Game.Ask();
 
             if (key == ConsoleKey.K)
-                Game.Width += 2;
+                Game.Screen -= new Scale(0, 2);
 
-            Camera.Instance.Move(movement);
+            Move(movement);
+            Camera.Instance.Position = Position;
             if (key == ConsoleKey.Escape)
                 Game.Stop();
         }

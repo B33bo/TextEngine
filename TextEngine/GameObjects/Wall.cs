@@ -9,6 +9,7 @@ namespace TextEngine.GameObjects
     //Wall is only used for testing purposes
     internal class Wall : GameObject
     {
+        public static Wall instance;
         public override void KeyPress(ConsoleKey key)
         {
             if (key == ConsoleKey.P)

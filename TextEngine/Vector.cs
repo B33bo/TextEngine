@@ -55,13 +55,13 @@ namespace TextEngine
             int newX = X;
             int newY = Y;
 
-            return new(WrapInt(newX, Game.Width), WrapInt(newY, Game.Height));
+            return new(WrapInt(newX, Game.Screen.width), WrapInt(newY, Game.Screen.height));
         }
 
         public Vector2D ScreenClamp()
         {
-            int newX = Math.Clamp(X, 0, Game.Width - 1);
-            int newY = Math.Clamp(Y, 0, Game.Height - 1);
+            int newX = Math.Clamp(X, 0, Game.Screen.width - 1);
+            int newY = Math.Clamp(Y, 0, Game.Screen.height - 1);
 
             return new(newX, newY);
         }
@@ -79,10 +79,10 @@ namespace TextEngine
 
         public bool InScreen()
         {
-            if (X >= Game.Width || X < 0)
+            if (X >= Game.Screen.width || X < 0)
                 return false;
 
-            if (Y < 0 || Y >= Game.Height)
+            if (Y < 0 || Y >= Game.Screen.height)
                 return false;
 
             return true;
@@ -114,9 +114,9 @@ namespace TextEngine
         public static Vector2D Random()
         {
             Random rnd = new();
-            int x = rnd.Next(0, Game.Width);
+            int x = rnd.Next(0, Game.Screen.width);
             rnd = new(rnd.Next());
-            int y = rnd.Next(0, Game.Height);
+            int y = rnd.Next(0, Game.Screen.height);
 
             return new(x, y);
         }
