@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Pastel;
 
 namespace TextEngine
 {
@@ -59,7 +60,7 @@ namespace TextEngine
             }
 
             //Stores colour data
-            (byte c, byte h)[,] colours = new (byte, byte)[Game.Screen.width, Game.Screen.height];
+            (string c, string h)[,] colours = new (string, string)[Game.Screen.width, Game.Screen.height];
 
             foreach (GameObject obj in Game.GameObjects)
             {
@@ -85,7 +86,6 @@ namespace TextEngine
                         frame[renderPos.Y] = line.ToString();
 
                         colours[renderPos.X, renderPos.Y] = (obj.Texture[i, j].Color, obj.Texture[i, j].Highlight);
-                        //Colors.GetColors(obj.Texture[i, j].Color, obj.Texture[i, j].Highlight);
                     }
                 }
             }
@@ -96,7 +96,7 @@ namespace TextEngine
             {
                 Console.CursorTop = i;
                 Console.CursorLeft = 0;
-                //Console.Write(GetLine(frame[i], colours, i));
+                Console.Write(GetLine(frame[i], colours, i));
             }
             //Write(frame, colours);
 
@@ -129,7 +129,7 @@ namespace TextEngine
             Console.Write(Game.ToolBar);
         }
 
-        private static string GetLine(string UncolouredFrame, string[,] ColourData, int Ypos)
+        private static string GetLine(string UncolouredFrame, (string c, string h)[,] ColourData, int Ypos)
         {
             //Merge colourData and the frame
 
@@ -139,35 +139,23 @@ namespace TextEngine
             string s = "";
             for (int i = 0; i < UncolouredFrame.Length; i++)
             {
-                bool isColour = ColourData[i, Ypos] != "";
-
-                if (isColour)
-                    s += ColourData[i, Ypos];
-
-                s += UncolouredFrame[i];
-
-                if (isColour)
-                    s += Colors.End;
+                s += GetColour(UncolouredFrame[i], ColourData[i, Ypos]);
             }
 
             return s;
         }
 
-        static void Write(string[] Lines, (byte c, byte h)[,] ColourData)
+        static string GetColour(char input, (string colour, string highlight) colourData)
         {
-            for (int i = 0; i < Lines.Length; i++)
-            {
-                for (int j = 0; j < Lines[i].Length; j++)
-                {
-                    Console.SetCursorPosition(j, i);
-                    (int c, int h) currentColourData = ColourData[i, j];
+            string inputStr = input.ToString();
 
-                    Console.ForegroundColor = currentColourData.c == 0 ? ConsoleColor.White : (ConsoleColor)currentColourData.c;
-                    Console.BackgroundColor = currentColourData.h == 0 ? ConsoleColor.Black : (ConsoleColor)currentColourData.h;
+            if (!(colourData.colour == "" || colourData.colour is null))
+                inputStr = inputStr.Pastel(colourData.colour);
 
-                    Console.Write(Lines[i][j]);
-                }
-            }
+            if (!(colourData.highlight == "" || colourData.highlight is null))
+                inputStr = inputStr.PastelBg(colourData.highlight);
+
+            return inputStr;
         }
 
         /// <summary>

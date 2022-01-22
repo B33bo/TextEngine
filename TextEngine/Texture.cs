@@ -37,13 +37,13 @@ namespace TextEngine
             CustomIndexer = null;
         }
 
-        public Texture(string[] s, byte[,] colour)
+        public Texture(string[] s, string[,] colour)
         {
             cells = GetCells(s, colour, null);
             CustomIndexer = null;
         }
 
-        public Texture(string[] s, byte[,] colour, byte[,] highlight)
+        public Texture(string[] s, string[,] colour, string[,] highlight)
         {
             cells = GetCells(s, colour, highlight);
             CustomIndexer = null;
@@ -61,7 +61,7 @@ namespace TextEngine
             CustomIndexer = null;
         }
 
-        private static Cell[,] GetCells(string[] lines, byte[,] colour, byte[,] highlight)
+        private static Cell[,] GetCells(string[] lines, string[,] colour, string[,] highlight)
         {
             bool UseColour = colour != null;
             bool UseHighlight = highlight != null;
@@ -79,8 +79,8 @@ namespace TextEngine
             {
                 for (int x = 0; x < LengthOfCells; x++)
                 {
-                    byte Colour = UseColour ? colour[x, y] : (byte)0;
-                    byte Highlight = UseHighlight ? highlight[x, y] : (byte)0;
+                    string Colour = UseColour ? colour[x, y] : "";
+                    string Highlight = UseHighlight ? highlight[x, y] : "";
 
                     if (lines[x].Length < LengthOfCells)
                     {
@@ -112,15 +112,22 @@ namespace TextEngine
     public struct Cell
     {
         public char Character;
-        public byte Color, Highlight;
+        public string Color, Highlight;
 
         public Cell(char Char)
         {
             Character = Char;
-            Color = 0; Highlight = 0;
+            Color = ""; Highlight = "";
         }
 
-        public Cell(char Char, byte Color, byte Highlight)
+        public Cell(char Char, string Color)
+        {
+            Character = Char;
+            this.Color = Color;
+            Highlight = "";
+        }
+
+        public Cell(char Char, string Color, string Highlight)
         {
             Character = Char;
             this.Color = Color;

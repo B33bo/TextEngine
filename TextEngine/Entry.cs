@@ -18,10 +18,6 @@ namespace TextEngine
 
         static void Main(string[] args)
         {
-            //Console.OutputEncoding = new System.Text.UnicodeEncoding();
-            Console.WriteLine("\x1b[38;5;2mHELLO");
-            Console.ReadLine();
-
             Game.Screen = new(50, 50);
             Player player = new();
             player.HasCollision = true;
@@ -29,9 +25,11 @@ namespace TextEngine
             Wall wall = new();
             Wall.instance = wall;
 
+            string grey = "555555";
+            string orange = "FF8800";
+
             //Texture wallTexture = new(WallTex,
-            //    new byte[,] { { 8, 8, 8, 8 }, { 8, 1, 1, 8 }, { 8, 1, 8, 8 }, { 1, 8, 8, 8 } },
-            //    new byte[,] { { 0, 0, 0, 0 }, { 0, 208, 208, 0 }, { 0, 208, 0, 0 }, { 208, 0, 0, 0 } });
+            //    new string[,] { { grey, grey, grey, grey }, { orange, grey, grey, orange }, { grey, orange, grey, grey }, { orange, grey, grey, grey } });
 
             Texture wallTexture = new(GetCell);
 
@@ -47,13 +45,8 @@ namespace TextEngine
 
         static Cell GetCell(int x, int y)
         {
-            int n;
-            if (y == 0)
-                n = 0;
-            else
-                n = x % y;
-            char newChar = (char)((n - 65 % (122 - 65)) + 65);
-            return new(newChar, (byte)n, 0);
+            string color = x * x == y * y ? "#FF0000" : "";
+            return new Cell('-', color, "");
         }
     }
 }
