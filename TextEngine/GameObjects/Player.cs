@@ -47,12 +47,6 @@ namespace TextEngine.GameObjects
                 Wall.instance.Scale += new Scale(1, 0);
             }
 
-            if (key == ConsoleKey.H)
-                Highlight++;
-
-            if (key == ConsoleKey.C)
-                Color++;
-
             if (key == ConsoleKey.L)
                 Game.ToolBar = "you said: " + Game.Ask();
 

@@ -116,6 +116,7 @@ namespace TextEngine
 
         public static void Stop()
         {
+#pragma warning disable SYSLIB0006 // Type or member is obsolete
             Running = false;
 
             try
@@ -128,6 +129,7 @@ namespace TextEngine
                 GameThread = null;
                 ThreadsRunning--;
             }
+#pragma warning restore SYSLIB0006 // Type or member is obsolete
 
             while (ThreadsRunning != 0)
             {

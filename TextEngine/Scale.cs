@@ -85,5 +85,15 @@ namespace TextEngine
 
             return true;
         }
+
+        public override bool Equals(object obj)
+        {
+            return (Scale)obj == this;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

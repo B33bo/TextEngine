@@ -47,7 +47,8 @@ namespace TextEngine
 
         static Cell GetCell(int x, int y)
         {
-            string color = x * x == y * y ? "#FF0000" : "";
+            x -= 20; y -= 20;
+            string color = x * x + y * y == 100 ? "#FF0000" : "";
             return new Cell('-', color, "");
         }
     }

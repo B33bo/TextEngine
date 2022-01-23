@@ -150,5 +150,10 @@ namespace TextEngine
                 return false;
             }
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

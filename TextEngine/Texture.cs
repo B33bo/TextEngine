@@ -55,6 +55,16 @@ namespace TextEngine
             cells = null;
         }
 
+        public void SetCellColor(int x, int y, string colour)
+        {
+            cells[x, y].Color = colour;
+        }
+
+        public void SetCell(int x, int y, Cell cell)
+        {
+            cells[x, y] = cell;
+        }
+
         Texture(Cell[,] c)
         {
             cells = c;
@@ -133,5 +143,9 @@ namespace TextEngine
             this.Color = Color;
             this.Highlight = Highlight;
         }
+
+        public void SetColor(string Color) => this.Color = Color;
+        public void SetHighlight(string Highlight) => this.Highlight = Highlight;
+        public void SetCharacter(char Character) => this.Character = Character;
     }
 }

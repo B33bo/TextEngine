@@ -42,16 +42,16 @@ namespace TextEngine
             set => prefab.Invisible = value;
         }
 
-        public byte Color
+        public string Color
         {
-            get => prefab.Color;
-            set => prefab.Color = value;
+            get => prefab.texture[0,0].Color;
+            set => prefab.texture[0,0].SetColor(value);
         }
 
-        public byte Highlight
+        public string Highlight
         {
-            get => prefab.Highlight;
-            set => prefab.Highlight = value;
+            get => prefab.texture[0, 0].Highlight;
+            set => prefab.texture[0,0].SetHighlight(value);
         }
 
         public Scale Scale
