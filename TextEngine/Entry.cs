@@ -23,22 +23,17 @@ namespace TextEngine
             player.HasCollision = true;
 
             Wall wall = new();
+            wall.Color = "#FF0000";
+            Wall wall2 = new();
+            wall2.Color = "#FFFF00";
+
             Wall.instance = wall;
-
-            string grey = "555555";
-            string orange = "FF8800";
-
-            //Texture wallTexture = new(WallTex,
-            //    new string[,] { { grey, grey, grey, grey }, { orange, grey, grey, orange }, { grey, orange, grey, grey }, { orange, grey, grey, grey } });
-
-            Texture wallTexture = new(GetCell);
-
-            wall.Texture = wallTexture;
-            wall.Position = new(5, 4);
-            wall.HasCollision = true;
+            wall2.RenderOrder = 0;
 
             Game.AddObject(player);
+
             Game.AddObject(wall);
+            Game.AddObject(wall2);
 
             Game.OnQuitGame += () => Console.WriteLine("Ur trash");
 

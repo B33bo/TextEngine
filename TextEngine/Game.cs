@@ -37,7 +37,7 @@ namespace TextEngine
         //It's like FPS but for how many calls the update methods recieve
         public static float CallsPerSecond
         {
-            get => GameLoopCalls / (Timer.ElapsedMilliseconds / 1000f);
+            get; private set;
         }
 
         public static ulong GameLoopCalls { get; private set; }
@@ -68,8 +68,12 @@ namespace TextEngine
                 while (Running)
                 {
                     var KeyPress = Console.ReadKey(true).Key;
-                    for (int i = 0; i < GameObjects.Count; i++)
+                    int gameObjects = GameObjects.Count;
+                    for (int i = 0; i < gameObjects; i++)
                     {
+                        if (GameObjects.Count <= i)
+                            //a gameobject got killed
+                            break;
                         GameObjects[i].KeyPress(KeyPress);
                     }
                     WaitForAnswer();
@@ -99,6 +103,9 @@ namespace TextEngine
         {
             while (Running)
             {
+                Stopwatch timer = new();
+                timer.Start();
+
                 for (int i = 0; i < GameObjects.Count; i++)
                 {
                     GameLoopCalls++;
@@ -110,15 +117,16 @@ namespace TextEngine
                     gm.Update();
                 }
 
+                CallsPerSecond = 1000f / timer.ElapsedMilliseconds;
                 WaitForAnswer();
             }
         }
 
         public static void Stop()
         {
-#pragma warning disable SYSLIB0006 // Type or member is obsolete
             Running = false;
 
+#pragma warning disable SYSLIB0006 // Type or member is obsolete
             try
             {
                 GameThread.Abort();
@@ -183,6 +191,15 @@ namespace TextEngine
             {
 
             }
+        }
+
+        public static string RandomColor()
+        {
+            Random rnd = new();
+            rnd = new(rnd.Next());
+
+            int colourInt = rnd.Next(0, 0x_FFFFFF);
+            return colourInt.ToString("X").PadLeft(6, '0');
         }
 
         public delegate void GameQuitHandler();

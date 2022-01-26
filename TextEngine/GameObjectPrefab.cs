@@ -16,6 +16,8 @@ namespace TextEngine
 
         public bool hasCollision;   //If this is true, it cannot interact with other collision objects
 
+        public uint renderOrder;
+
         public GameObjectPrefab(Texture texture, Vector2D pos, bool hasCollision)
         {
             this.texture = texture;
@@ -23,6 +25,7 @@ namespace TextEngine
             this.hasCollision = hasCollision;
             Invisible = false;
             scale = new(1, 1);
+            renderOrder = 0;
         }
 
         public GameObjectPrefab(Texture texture, Vector2D pos, bool hasCollision, bool Invisible)
@@ -32,6 +35,7 @@ namespace TextEngine
             this.hasCollision = hasCollision;
             this.Invisible = Invisible;
             scale = new(1, 1);
+            renderOrder = 0;
         }
     }
 }

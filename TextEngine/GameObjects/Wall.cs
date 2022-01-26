@@ -10,10 +10,18 @@ namespace TextEngine.GameObjects
     internal class Wall : GameObject
     {
         public static Wall instance;
+
+        public Wall()
+        {
+            Position = new(5, 5);
+            Character = '#';
+            RenderOrder = 2;
+        }
+
         public override void KeyPress(ConsoleKey key)
         {
-            if (key == ConsoleKey.P)
-                Scale += new Scale(1, 1);
+            if (key == ConsoleKey.P && this != instance)
+                RenderOrder++;
         }
 
         public override void OnCollision(GameObject type, Vector2D displacement)

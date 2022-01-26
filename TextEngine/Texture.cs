@@ -25,6 +25,9 @@ namespace TextEngine
 
         public Func<int, int, Cell> CustomIndexer;
 
+        public int Width => cells.GetLength(0);
+        public int Height => cells.GetLength(1);
+
         public Texture(string[] s)
         {
             cells = GetCells(s, null, null);
@@ -113,6 +116,28 @@ namespace TextEngine
             return returnValue;
         }
 
+        public void SetColor(string color)
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    cells[i, j].Color = color;
+                }
+            }
+        }
+
+        public void SetHighlight(string color)
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    cells[i, j].Highlight = color;
+                }
+            }
+        }
+
         public static implicit operator Texture(Cell[,] c) => new(c);
 
         public static implicit operator Texture(string[] s) => new(s);
@@ -144,7 +169,9 @@ namespace TextEngine
             this.Highlight = Highlight;
         }
 
-        public void SetColor(string Color) => this.Color = Color;
+        public void SetColor(string Color) {
+            this.Color = Color;
+        }
         public void SetHighlight(string Highlight) => this.Highlight = Highlight;
         public void SetCharacter(char Character) => this.Character = Character;
     }

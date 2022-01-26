@@ -45,19 +45,25 @@ namespace TextEngine
         public string Color
         {
             get => prefab.texture[0,0].Color;
-            set => prefab.texture[0,0].SetColor(value);
+            set => prefab.texture.SetColor(value);
         }
 
         public string Highlight
         {
             get => prefab.texture[0, 0].Highlight;
-            set => prefab.texture[0,0].SetHighlight(value);
+            set => prefab.texture.SetHighlight(value);
         }
 
         public Scale Scale
         {
             get => prefab.scale;
             set => prefab.scale = value;
+        }
+
+        public uint RenderOrder
+        {
+            get => prefab.renderOrder;
+            set => prefab.renderOrder = value;
         }
         #endregion
 

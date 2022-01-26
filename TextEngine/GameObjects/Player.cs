@@ -56,7 +56,7 @@ namespace TextEngine.GameObjects
             if (key == ConsoleKey.J)
                 Game.Stop();
 
-            Move(movement);
+            //Move(movement);
             Camera.Instance.Position = Position;
             if (key == ConsoleKey.Escape)
                 Game.Stop();
@@ -68,7 +68,10 @@ namespace TextEngine.GameObjects
 
         public override void Update()
         {
-            //Game.ToolBar = $"{Position} {Render.AverageFPS,-10} {Game.CallsPerSecond}";
+            Game.ToolBar = $"{Position} {Render.FPS,-10} {Game.CallsPerSecond} {StressTest.items}";
+
+            if (Game.Timer.ElapsedMilliseconds > 2000)
+                Wall.instance.Destroy();
         }
     }
 }

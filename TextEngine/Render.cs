@@ -13,10 +13,7 @@ namespace TextEngine
 
         private static string emptyBar;
 
-        public static float AverageFPS
-        {
-            get => FrameCount / (Game.Timer.ElapsedMilliseconds / 1000f);
-        }
+        public static float FPS { get; private set; }
 
         static int previousToolbarLen = 0;
         internal static bool RecalcBordersNextFrame = false;
@@ -25,6 +22,9 @@ namespace TextEngine
 
         internal static void Redraw()
         {
+            System.Diagnostics.Stopwatch s = new();
+            s.Start();
+
             FrameCount++;
 
             if (Game.Screen.height <= -3)
@@ -60,35 +60,42 @@ namespace TextEngine
             }
 
             //Stores colour data
-            (string c, string h)[,] colours = new (string, string)[Game.Screen.width, Game.Screen.height];
+            (string c, string h, uint renderOrder)[,] colours = new (string, string, uint)[Game.Screen.width, Game.Screen.height];
 
-            foreach (GameObject obj in Game.GameObjects)
+            try
             {
-                if (obj.Invisible)
-                    continue;
-
-                //The object position relative to the camera
-                Vector2D drawPos = obj.Position - Camera.Instance.Position;
-
-                for (int i = 0; i < obj.Scale.width; i++)
+                foreach (GameObject obj in Game.GameObjects)
                 {
-                    for (int j = 0; j < obj.Scale.height; j++)
+                    if (obj.Invisible)
+                        continue;
+
+                    //The object position relative to the camera
+                    Vector2D drawPos = obj.Position - Camera.Instance.Position;
+
+                    for (int i = 0; i < obj.Scale.width; i++)
                     {
-                        //Add the current part of the object to it's position. This is the Game cell we are drawing
-                        Vector2D renderPos = new(drawPos.X + i, drawPos.Y + j);
+                        for (int j = 0; j < obj.Scale.height; j++)
+                        {
+                            //Add the current part of the object to it's position. This is the Game cell we are drawing
+                            Vector2D renderPos = new(drawPos.X + i, drawPos.Y + j);
 
-                        if (!renderPos.InScreen())
-                            //It's offscreen
-                            continue;
+                            if (!renderPos.InScreen())
+                                //It's offscreen
+                                continue;
 
-                        StringBuilder line = new(frame[renderPos.Y]);
-                        line[renderPos.X] = obj.Texture[i, j].Character;
-                        frame[renderPos.Y] = line.ToString();
+                            if (obj.RenderOrder < colours[renderPos.X, renderPos.Y].renderOrder)
+                                continue;
 
-                        colours[renderPos.X, renderPos.Y] = (obj.Texture[i, j].Color, obj.Texture[i, j].Highlight);
+                            StringBuilder line = new(frame[renderPos.Y]);
+                            line[renderPos.X] = obj.Texture[i, j].Character;
+                            frame[renderPos.Y] = line.ToString();
+
+                            colours[renderPos.X, renderPos.Y] = (obj.Texture[i, j].Color, obj.Texture[i, j].Highlight, obj.RenderOrder);
+                        }
                     }
                 }
             }
+            catch (InvalidOperationException) { }
 
             //At this point, we have an uncoloured frame, and a list of colour data
             //Simply merge them
@@ -100,6 +107,7 @@ namespace TextEngine
             }
             //Write(frame, colours);
 
+            FPS = 1000f / s.ElapsedMilliseconds;
             Game.WaitForAnswer();
         }
 
@@ -129,7 +137,7 @@ namespace TextEngine
             Console.Write(Game.ToolBar);
         }
 
-        private static string GetLine(string UncolouredFrame, (string c, string h)[,] ColourData, int Ypos)
+        private static string GetLine(string UncolouredFrame, (string c, string h, uint renderOrder)[,] ColourData, int Ypos)
         {
             //Merge colourData and the frame
 
@@ -145,7 +153,7 @@ namespace TextEngine
             return s;
         }
 
-        static string GetColour(char input, (string colour, string highlight) colourData)
+        static string GetColour(char input, (string colour, string highlight, uint renderOrder) colourData)
         {
             string inputStr = input.ToString();
 
