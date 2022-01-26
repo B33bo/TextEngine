@@ -23,14 +23,12 @@ namespace TextEngine
             player.HasCollision = true;
 
             Wall wall = new();
-            wall.Color = "#FF0000";
+            wall.Color = new("#FF0000");
             Wall wall2 = new();
-            wall2.Color = "#FFFF00";
+            wall2.Color = new("#FFFF00");
 
             Wall.instance = wall;
             wall2.RenderOrder = 0;
-
-            Game.AddObject(player);
 
             Game.AddObject(wall);
             Game.AddObject(wall2);
@@ -44,7 +42,7 @@ namespace TextEngine
         {
             x -= 20; y -= 20;
             string color = x * x + y * y == 100 ? "#FF0000" : "";
-            return new Cell('-', color, "");
+            return new Cell('-', new(color), Color.Default);
         }
     }
 }

@@ -42,13 +42,13 @@ namespace TextEngine
             set => prefab.Invisible = value;
         }
 
-        public string Color
+        public Color Color
         {
             get => prefab.texture[0,0].Color;
             set => prefab.texture.SetColor(value);
         }
 
-        public string Highlight
+        public Color Highlight
         {
             get => prefab.texture[0, 0].Highlight;
             set => prefab.texture.SetHighlight(value);

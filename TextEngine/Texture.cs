@@ -40,13 +40,13 @@ namespace TextEngine
             CustomIndexer = null;
         }
 
-        public Texture(string[] s, string[,] colour)
+        public Texture(string[] s, Color[,] colour)
         {
             cells = GetCells(s, colour, null);
             CustomIndexer = null;
         }
 
-        public Texture(string[] s, string[,] colour, string[,] highlight)
+        public Texture(string[] s, Color[,] colour, Color[,] highlight)
         {
             cells = GetCells(s, colour, highlight);
             CustomIndexer = null;
@@ -58,7 +58,7 @@ namespace TextEngine
             cells = null;
         }
 
-        public void SetCellColor(int x, int y, string colour)
+        public void SetCellColor(int x, int y, Color colour)
         {
             cells[x, y].Color = colour;
         }
@@ -74,7 +74,7 @@ namespace TextEngine
             CustomIndexer = null;
         }
 
-        private static Cell[,] GetCells(string[] lines, string[,] colour, string[,] highlight)
+        private static Cell[,] GetCells(string[] lines, Color[,] colour, Color[,] highlight)
         {
             bool UseColour = colour != null;
             bool UseHighlight = highlight != null;
@@ -92,8 +92,8 @@ namespace TextEngine
             {
                 for (int x = 0; x < LengthOfCells; x++)
                 {
-                    string Colour = UseColour ? colour[x, y] : "";
-                    string Highlight = UseHighlight ? highlight[x, y] : "";
+                    Color Colour = UseColour ? colour[x, y] : Color.Default;
+                    Color Highlight = UseHighlight ? highlight[x, y] : Color.Default;
 
                     if (lines[x].Length < LengthOfCells)
                     {
@@ -116,7 +116,7 @@ namespace TextEngine
             return returnValue;
         }
 
-        public void SetColor(string color)
+        public void SetColor(Color color)
         {
             for (int i = 0; i < Width; i++)
             {
@@ -127,7 +127,7 @@ namespace TextEngine
             }
         }
 
-        public void SetHighlight(string color)
+        public void SetHighlight(Color color)
         {
             for (int i = 0; i < Width; i++)
             {
@@ -147,32 +147,33 @@ namespace TextEngine
     public struct Cell
     {
         public char Character;
-        public string Color, Highlight;
+        public Color Color, Highlight;
 
         public Cell(char Char)
         {
             Character = Char;
-            Color = ""; Highlight = "";
+            Color = Color.Default; Highlight = Color.Default;
         }
 
-        public Cell(char Char, string Color)
+        public Cell(char Char, Color Color)
         {
             Character = Char;
             this.Color = Color;
-            Highlight = "";
+            Highlight = Color.Default;
         }
 
-        public Cell(char Char, string Color, string Highlight)
+        public Cell(char Char, Color Color, Color Highlight)
         {
             Character = Char;
             this.Color = Color;
             this.Highlight = Highlight;
         }
 
-        public void SetColor(string Color) {
+        public void SetColor(Color Color)
+        {
             this.Color = Color;
         }
-        public void SetHighlight(string Highlight) => this.Highlight = Highlight;
+        public void SetHighlight(Color Highlight) => this.Highlight = Highlight;
         public void SetCharacter(char Character) => this.Character = Character;
     }
 }

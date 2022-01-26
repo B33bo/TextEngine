@@ -44,7 +44,7 @@ namespace TextEngine.GameObjects
 
         public override void OnCollision(GameObject collision, Vector2D displacement)
         {
-            Color = Game.RandomColor();
+            Color = Color.Random();
         }
 
         public override void Update()
@@ -54,7 +54,7 @@ namespace TextEngine.GameObjects
                 lastMS = Game.Timer.ElapsedMilliseconds;
                 //Position = Vector2D.Random();
             }
-            string newCol = Game.RandomColor();
+            Color newCol = Color.Random();
             Texture.SetCellColor(0, 0, newCol);
         }
     }

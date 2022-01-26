@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Pastel;
 
 namespace TextEngine
 {
@@ -60,7 +59,7 @@ namespace TextEngine
             }
 
             //Stores colour data
-            (string c, string h, uint renderOrder)[,] colours = new (string, string, uint)[Game.Screen.width, Game.Screen.height];
+            (Color c, Color h, uint renderOrder)[,] colours = new (Color, Color, uint)[Game.Screen.width, Game.Screen.height];
 
             try
             {
@@ -137,7 +136,7 @@ namespace TextEngine
             Console.Write(Game.ToolBar);
         }
 
-        private static string GetLine(string UncolouredFrame, (string c, string h, uint renderOrder)[,] ColourData, int Ypos)
+        private static string GetLine(string UncolouredFrame, (Color c, Color h, uint renderOrder)[,] ColourData, int Ypos)
         {
             //Merge colourData and the frame
 
@@ -153,15 +152,15 @@ namespace TextEngine
             return s;
         }
 
-        static string GetColour(char input, (string colour, string highlight, uint renderOrder) colourData)
+        static string GetColour(char input, (Color colour, Color highlight, uint renderOrder) colourData)
         {
             string inputStr = input.ToString();
 
-            if (!(colourData.colour == "" || colourData.colour is null))
-                inputStr = inputStr.Pastel(colourData.colour);
+            if (colourData.colour != Color.Default)
+                inputStr = inputStr.Colourize(colourData.colour);
 
-            if (!(colourData.highlight == "" || colourData.highlight is null))
-                inputStr = inputStr.PastelBg(colourData.highlight);
+            if (colourData.colour != Color.Default)
+                inputStr = inputStr.Colourize(colourData.highlight);
 
             return inputStr;
         }

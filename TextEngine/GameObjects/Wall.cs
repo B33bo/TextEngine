@@ -16,6 +16,8 @@ namespace TextEngine.GameObjects
             Position = new(5, 5);
             Character = '#';
             RenderOrder = 2;
+
+            Color = Color.Red;
         }
 
         public override void KeyPress(ConsoleKey key)

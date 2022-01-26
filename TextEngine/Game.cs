@@ -55,6 +55,7 @@ namespace TextEngine
 
         public static void Start()
         {
+            ConsoleColourManager.Enable();
             Console.OutputEncoding = new UnicodeEncoding();
             Timer = new();
 
@@ -191,15 +192,6 @@ namespace TextEngine
             {
 
             }
-        }
-
-        public static string RandomColor()
-        {
-            Random rnd = new();
-            rnd = new(rnd.Next());
-
-            int colourInt = rnd.Next(0, 0x_FFFFFF);
-            return colourInt.ToString("X").PadLeft(6, '0');
         }
 
         public delegate void GameQuitHandler();
