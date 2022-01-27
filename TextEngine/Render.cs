@@ -16,8 +16,11 @@ namespace TextEngine
 
         static int previousToolbarLen = 0;
         internal static bool RecalcBordersNextFrame = false;
+        internal static bool ChangeScreenPosNextFrame = false;
 
         internal static Scale oldScale;
+
+        public static Action customRenderCode;
 
         internal static void Redraw()
         {
@@ -31,6 +34,12 @@ namespace TextEngine
                 return;
 
             WriteToolbar();
+
+            if (ChangeScreenPosNextFrame)
+            {
+                ChangeScreenPosNextFrame = false;
+                ChangeScreenPos();
+            }
 
             if (RecalcBordersNextFrame)
             {
@@ -98,16 +107,38 @@ namespace TextEngine
 
             //At this point, we have an uncoloured frame, and a list of colour data
             //Simply merge them
+            int drawAtX = Game.ScreenPos.X;
+
+            string beforeFrame = drawAtX > 0 ? "|" : "";
+
+            if (drawAtX > 0)
+                drawAtX--;
+
             for (int i = 0; i < frame.Length; i++)
             {
-                Console.CursorTop = i;
-                Console.CursorLeft = 0;
-                Console.Write(GetLine(frame[i], colours, i));
+                if (i + Game.ScreenPos.Y < 0)
+                    continue;
+
+                Console.SetCursorPosition(drawAtX < 0 ? 0 : drawAtX, i + Game.ScreenPos.Y);
+
+                string currentFrame = beforeFrame + GetLine(frame[i], colours, i) + "|";
+
+                if (drawAtX < 0 && drawAtX < -currentFrame.Length)
+                    continue;
+
+                if (drawAtX < 0)
+                    currentFrame = currentFrame[Math.Abs(drawAtX)..];
+
+                Console.Write(currentFrame);
             }
             //Write(frame, colours);
 
+            if (customRenderCode != null)
+                customRenderCode.Invoke();
+
             FPS = 1000f / s.ElapsedMilliseconds;
-            Game.WaitForAnswer();
+
+            Game.WaitUntilUnpause();
         }
 
         /// <summary>Writes the toolbar at the bottom of the screen</summary>
@@ -131,7 +162,7 @@ namespace TextEngine
 
             previousToolbarLen = newToolbarLen;
 
-            Console.CursorTop = Game.Screen.height + 2;
+            Console.CursorTop = Game.Screen.height + 2 + Game.ScreenPos.Y;
             Console.CursorLeft = 0;
             Console.Write(Game.ToolBar);
         }
@@ -146,7 +177,14 @@ namespace TextEngine
             string s = "";
             for (int i = 0; i < UncolouredFrame.Length; i++)
             {
-                s += GetColour(UncolouredFrame[i], ColourData[i, Ypos]);
+                try
+                {
+                    s += GetColour(UncolouredFrame[i], ColourData[i, Ypos]);
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    continue;
+                }
             }
 
             return s;
@@ -168,17 +206,20 @@ namespace TextEngine
         /// <summary>
         /// Recalculates the edges of the screen
         /// </summary>
-        internal static void RecalcBorders()
+        private static void RecalcBorders()
         {
             if (oldScale.height > Game.Screen.height)
                 Console.Clear();
+
+            if (Game.Screen.height + Game.ScreenPos.Y < 0)
+                return;
 
             Console.CursorTop = 0;
             Console.CursorLeft = 0;
             emptyBar = "";
             string dashesAtBottom = ""; //The ----- at the bottom of the screen
 
-            if (Game.Screen.width < 0 || Game.Screen.height < 0)
+            if (Game.Screen.width <= 0 || Game.Screen.height < 0)
             {
                 Console.Clear();
                 return;
@@ -196,12 +237,41 @@ namespace TextEngine
                 clearEdges += " ";
             }
 
-            for (int i = 0; i < Game.Screen.height; i++)
+            int DrawAtPos = Game.ScreenPos.X;
+
+            string startOfBottom = DrawAtPos > 0 ? "|" : "";
+
+            if (DrawAtPos > 0)
+                DrawAtPos--;
+
+            string bottom = startOfBottom + dashesAtBottom + "|" + clearEdges; //|______|
+
+            while (DrawAtPos < 0)
             {
-                Console.CursorTop = i;
-                Console.WriteLine(emptyBar + "|" + clearEdges);
+                DrawAtPos++;
+                bottom = bottom[1..];
+                dashesAtBottom = dashesAtBottom[1..];
+
+                if (bottom == "" || dashesAtBottom == "")
+                    return;
             }
-            Console.WriteLine(dashesAtBottom + "|" + clearEdges);
+
+            Console.CursorLeft = DrawAtPos;
+            Console.CursorTop = Game.Screen.height + Game.ScreenPos.Y;
+
+            Console.Write(bottom);
+
+            if (Game.ScreenPos.Y > 0)
+            {
+                Console.SetCursorPosition(DrawAtPos, Game.ScreenPos.Y - 1);
+                Console.Write(" " + dashesAtBottom);
+            }
+        }
+
+        private static void ChangeScreenPos()
+        {
+            RecalcBordersNextFrame = true;
+            Console.Clear();
         }
     }
 }

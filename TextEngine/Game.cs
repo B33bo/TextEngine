@@ -34,6 +34,18 @@ namespace TextEngine
             }
         }
 
+        private static Vector2D PositionAtScreen { get; set; }
+
+        public static Vector2D ScreenPos
+        {
+            get => PositionAtScreen;
+            set
+            {
+                PositionAtScreen = value;
+                Render.ChangeScreenPosNextFrame = true;
+            }
+        }
+
         //It's like FPS but for how many calls the update methods recieve
         public static float CallsPerSecond
         {
@@ -43,6 +55,19 @@ namespace TextEngine
         public static ulong GameLoopCalls { get; private set; }
 
         internal static bool Running = true;
+        public static bool Paused
+        {
+            get => isPaused;
+            set
+            {
+                isPaused = value;
+
+                if (OnPauseGame != null)
+                    OnPauseGame.Invoke();
+            }
+        }
+
+        private static bool isPaused = false;
         private static bool AskingQuestion = false;
 
         public static List<GameObject> GameObjects
@@ -52,6 +77,7 @@ namespace TextEngine
 
         public static Stopwatch Timer { get; private set; }
         public static event GameQuitHandler OnQuitGame;
+        public static event GamePauseHandler OnPauseGame;
 
         public static void Start()
         {
@@ -77,18 +103,18 @@ namespace TextEngine
                             break;
                         GameObjects[i].KeyPress(KeyPress);
                     }
-                    WaitForAnswer();
+                    WaitUntilUnpause();
                 }
                 ThreadsRunning--;
             });
 
             //GameThread is used to call each object's update method
-            GameThread = new(() => {ThreadsRunning++; while (Running) GameTick(); ThreadsRunning--; });
+            GameThread = new(() => { ThreadsRunning++; while (Running) GameTick(); ThreadsRunning--; });
 
             Console.Clear();
 
             //Corners of screen
-            Render.RecalcBorders();
+            Render.RecalcBordersNextFrame = true;
 
             if (Camera.Instance is null)
                 AddObject(new Camera());
@@ -98,6 +124,7 @@ namespace TextEngine
             GameThread.Start();
 
             Timer.Start();
+            Running = true;
         }
 
         private static void GameTick()
@@ -114,12 +141,12 @@ namespace TextEngine
 
                     if (gm == null)
                         continue;
-                    
+
                     gm.Update();
                 }
 
                 CallsPerSecond = 1000f / timer.ElapsedMilliseconds;
-                WaitForAnswer();
+                WaitUntilUnpause();
             }
         }
 
@@ -180,20 +207,22 @@ namespace TextEngine
 
         /// <summary>This method is called so you don't accidentally render something while
         /// asking a question</summary>
-        internal static void WaitForAnswer()
+        internal static void WaitUntilUnpause()
         {
-            if (!AskingQuestion)
-                return;
+            if (AskingQuestion)
+            {
+                Console.CursorLeft = 0;
+                Console.CursorTop = scale.height + 3;
+                while (AskingQuestion) { }
+            }
 
-            Console.CursorLeft = 0;
-            Console.CursorTop = scale.height + 3;
-
-            while (AskingQuestion)
+            while (Paused)
             {
 
             }
         }
 
         public delegate void GameQuitHandler();
+        public delegate void GamePauseHandler();
     }
 }

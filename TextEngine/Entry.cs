@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TextEngine.GameObjects;
 
 namespace TextEngine
@@ -18,31 +19,27 @@ namespace TextEngine
 
         static void Main(string[] args)
         {
-            Game.Screen = new(50, 50);
+            Game.Screen = new(10, 10);
             Player player = new();
             player.HasCollision = true;
 
-            Wall wall = new();
-            wall.Color = new("#FF0000");
-            Wall wall2 = new();
-            wall2.Color = new("#FFFF00");
+            //Wall wall = new();
+            //wall.Texture = new(GetCell);
 
-            Wall.instance = wall;
-            wall2.RenderOrder = 0;
+            //Wall.instance = wall;
 
-            Game.AddObject(wall);
-            Game.AddObject(wall2);
+            //Game.AddObject(wall);
+            Game.AddObject(player);
 
             Game.OnQuitGame += () => Console.WriteLine("Ur trash");
+
 
             Game.Start();
         }
 
         static Cell GetCell(int x, int y)
         {
-            x -= 20; y -= 20;
-            string color = x * x + y * y == 100 ? "#FF0000" : "";
-            return new Cell('-', new(color), Color.Default);
+            return new('#', Color.Red);
         }
     }
 }

@@ -162,14 +162,14 @@ namespace TextEngine
 
         public static Color operator *(Color a, int b)
         {
-            int colour = Convert.ToInt32(a.ToString());
+            int colour = Convert.ToInt32(a.ToString(), 16);
             colour *= b;
             return new(colour.ToString("x"));
         }
 
         public static Color operator /(Color a, int b)
         {
-            int colour = Convert.ToInt32(a.ToString());
+            int colour = Convert.ToInt32(a.ToString(), 16);
             colour /= b;
             return new(colour.ToString("x"));
         }
@@ -181,6 +181,12 @@ namespace TextEngine
 
         public static bool operator !=(Color a, Color b)
             => !(a == b);
+
+        public static Color operator !(Color a)
+            => Color.White - a;
+
+        public static Color operator -(Color a)
+            => Color.White - a;
         #endregion
     }
 

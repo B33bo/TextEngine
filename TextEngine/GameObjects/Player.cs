@@ -13,6 +13,7 @@ namespace TextEngine.GameObjects
         {
             HasCollision = false;
             Vector2D movement = new();
+            Scale movement2 = new();
 
             if (key == ConsoleKey.W)
             {
@@ -36,28 +37,43 @@ namespace TextEngine.GameObjects
                 Character = '>';
             }
 
-            if (key == ConsoleKey.Q)
+
+            if (key == ConsoleKey.I)
             {
-                Wall.instance.Scale += new Scale(0, 1);
-                //Scale += new Scale(0, 1);
+                movement2.height -= 1;
+                Character = '^';
             }
-            if (key == ConsoleKey.E)
+            if (key == ConsoleKey.K)
             {
-                //Scale += new Scale(1, 0);
-                Wall.instance.Scale += new Scale(1, 0);
+                movement2.height += 1;
+                Character = 'V';
+            }
+
+            if (key == ConsoleKey.J)
+            {
+                movement2.width -= 1;
+                Character = '<';
             }
 
             if (key == ConsoleKey.L)
-                Game.ToolBar = "you said: " + Game.Ask();
+            {
+                movement2.width += 1;
+                Character = '<';
+            }
 
-            if (key == ConsoleKey.K)
-                Game.Screen -= new Scale(0, 2);
+            if (key == ConsoleKey.P)
+            {
+                Game.Paused = !Game.Paused;
+            }
 
-            if (key == ConsoleKey.J)
-                Game.Stop();
+            //if (key == ConsoleKey.J)
+            //    Game.ScreenPos += new Vector2D(1, 1);
 
-            //Move(movement);
-            Camera.Instance.Position = Position;
+            //Game.ScreenPos += movement;
+            //Game.Screen += movement2;
+
+            Move(movement);
+            //Camera.Instance.Position = Position;
             if (key == ConsoleKey.Escape)
                 Game.Stop();
         }
@@ -70,8 +86,6 @@ namespace TextEngine.GameObjects
         {
             Game.ToolBar = $"{Position} {Render.FPS,-10} {Game.CallsPerSecond} {StressTest.items}";
 
-            if (Game.Timer.ElapsedMilliseconds > 2000)
-                Wall.instance.Destroy();
         }
     }
 }
