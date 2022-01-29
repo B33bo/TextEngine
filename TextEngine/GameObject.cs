@@ -8,64 +8,35 @@ namespace TextEngine
 {
     public abstract class GameObject
     {
-        private GameObjectPrefab prefab;
-
-        //Nick all properties from prefab
-        #region Properties
-        public Texture Texture
-        {
-            get => prefab.texture;
-            set => prefab.texture = value;
-        }
+        public Texture texture;
 
         public char Character
         {
-            get => prefab.texture[0, 0].Character;
-            set => prefab.texture = new(value);
+            get => texture[0, 0].Character;
+            set => texture = new(value, Color, Highlight);
         }
 
-        public Vector2D Position
-        {
-            get => prefab.position;
-            set => prefab.position = value;
-        }
+        public Vector2D Position;
 
-        public bool HasCollision
-        {
-            get => prefab.hasCollision;
-            set => prefab.hasCollision = value;
-        }
+        public bool HasCollision;
 
-        public bool Invisible
-        {
-            get => prefab.Invisible;
-            set => prefab.Invisible = value;
-        }
+        public bool Invisible;
 
         public Color Color
         {
-            get => prefab.texture[0,0].Color;
-            set => prefab.texture.SetColor(value);
+            get => texture[0,0].Color;
+            set => texture.SetColor(value);
         }
 
         public Color Highlight
         {
-            get => prefab.texture[0, 0].Highlight;
-            set => prefab.texture.SetHighlight(value);
+            get => texture[0, 0].Highlight;
+            set => texture.SetHighlight(value);
         }
 
-        public Scale Scale
-        {
-            get => prefab.scale;
-            set => prefab.scale = value;
-        }
+        public Scale Scale;
 
-        public uint RenderOrder
-        {
-            get => prefab.renderOrder;
-            set => prefab.renderOrder = value;
-        }
-        #endregion
+        public uint RenderOrder;
 
         public GameObject()
         {

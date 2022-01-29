@@ -17,6 +17,9 @@ namespace TextEngine
                 if (CustomIndexer is not null)
                     return CustomIndexer.Invoke(x, y);
 
+                if (cells is null)
+                    return new('?');
+
                 x %= cells.GetLength(0); y %= cells.GetLength(1);
                 return cells[x, y];
             }
@@ -37,6 +40,12 @@ namespace TextEngine
         public Texture(char s)
         {
             cells = new Cell[,] { { new Cell(s) } };
+            CustomIndexer = null;
+        }
+
+        public Texture(char s, Color color, Color background)
+        {
+            cells = new Cell[,] { { new Cell(s, color, background) } };
             CustomIndexer = null;
         }
 

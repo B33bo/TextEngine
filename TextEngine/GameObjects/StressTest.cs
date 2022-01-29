@@ -55,7 +55,7 @@ namespace TextEngine.GameObjects
                 //Position = Vector2D.Random();
             }
             Color newCol = Color.Random();
-            Texture.SetCellColor(0, 0, newCol);
+            texture.SetCellColor(0, 0, newCol);
         }
     }
 }

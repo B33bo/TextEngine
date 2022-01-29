@@ -9,6 +9,11 @@ namespace TextEngine.GameObjects
     //Player is only used for testing purposes
     internal class Player : GameObject
     {
+        public Player()
+        {
+            texture = new(new string[] { "c" }, new Color[,] { { Color.Default } }, new Color[,] { { Color.Red } });
+        }
+
         public override void KeyPress(ConsoleKey key)
         {
             HasCollision = false;
@@ -64,6 +69,16 @@ namespace TextEngine.GameObjects
             if (key == ConsoleKey.P)
             {
                 Game.Paused = !Game.Paused;
+            }
+
+            if (key == ConsoleKey.C)
+            {
+                //Color = Color.Random();
+            }
+
+            if (key == ConsoleKey.H)
+            {
+                //Highlight = Color.Random();
             }
 
             //if (key == ConsoleKey.J)

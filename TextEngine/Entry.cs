@@ -19,6 +19,10 @@ namespace TextEngine
 
         static void Main(string[] args)
         {
+            ConsoleColourManager.Enable();
+            //Console.WriteLine("hello".Colourize(Color.Green, Color.Blue));
+
+            Console.ReadLine();
             Game.Screen = new(10, 10);
             Player player = new();
             player.HasCollision = true;

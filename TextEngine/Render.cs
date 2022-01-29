@@ -95,10 +95,10 @@ namespace TextEngine
                                 continue;
 
                             StringBuilder line = new(frame[renderPos.Y]);
-                            line[renderPos.X] = obj.Texture[i, j].Character;
+                            line[renderPos.X] = obj.texture[i, j].Character;
                             frame[renderPos.Y] = line.ToString();
 
-                            colours[renderPos.X, renderPos.Y] = (obj.Texture[i, j].Color, obj.Texture[i, j].Highlight, obj.RenderOrder);
+                            colours[renderPos.X, renderPos.Y] = (obj.texture[i, j].Color, obj.texture[i, j].Highlight, obj.RenderOrder);
                         }
                     }
                 }
@@ -193,13 +193,7 @@ namespace TextEngine
         static string GetColour(char input, (Color colour, Color highlight, uint renderOrder) colourData)
         {
             string inputStr = input.ToString();
-
-            if (colourData.colour != Color.Default)
-                inputStr = inputStr.Colourize(colourData.colour);
-
-            if (colourData.colour != Color.Default)
-                inputStr = inputStr.Colourize(colourData.highlight);
-
+            inputStr = inputStr.Colourize(colourData.colour, colourData.highlight);
             return inputStr;
         }
 

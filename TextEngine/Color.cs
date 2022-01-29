@@ -92,6 +92,9 @@ namespace TextEngine
             if (!(type == 38 || type == 48))
                 return "";
 
+            if (this == Color.Default)
+                return "";
+
             return $"{start}[{type};2;{R};{G};{B}m";
         }
 
@@ -194,7 +197,7 @@ namespace TextEngine
     {
         public static string Colourize(this string s, Color foreground)
         {
-            if (!Color.ConsoleColoursAllowed)
+            if (!Color.ConsoleColoursAllowed || foreground == Color.Default)
                 return s;
 
             return foreground.ToConsoleColor(Color.Foreground) + s + Color.EndColour;
@@ -205,7 +208,18 @@ namespace TextEngine
             if (!Color.ConsoleColoursAllowed)
                 return s;
 
+            if (foreground == Color.Default && background == Color.Default)
+                return s;
+
             return Color.ToConsoleColor(foreground, background) + s + Color.EndColour;
+        }
+
+        public static string ColourizeBackground(this string s, Color background)
+        {
+            if (!Color.ConsoleColoursAllowed || background == Color.Default)
+                return s;
+
+            return background.ToConsoleColor(Color.Background) + s + Color.EndColour;
         }
     }
 
