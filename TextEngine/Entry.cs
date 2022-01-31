@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TextEngine.GameObjects;
+using TextEngine.Demos;
 
 namespace TextEngine
 {
@@ -20,9 +21,7 @@ namespace TextEngine
         static void Main(string[] args)
         {
             ConsoleColourManager.Enable();
-            //Console.WriteLine("hello".Colourize(Color.Green, Color.Blue));
 
-            Console.ReadLine();
             Game.Screen = new(10, 10);
             Player player = new();
             player.HasCollision = true;
@@ -35,10 +34,15 @@ namespace TextEngine
             //Game.AddObject(wall);
             Game.AddObject(player);
 
-            Game.OnQuitGame += () => Console.WriteLine("Ur trash");
-
-
+            //Console.WriteLine((ConsoleKey)'\r');
+            Console.ReadKey();
+            //new Demo.KeyPress('a'), new Demo.KeyPress('w'), new Demo.Loop()});
             Game.Start();
+
+            Game.AddObject(new DemoRecorder());
+
+            Game.OnQuitGame += () => Console.WriteLine(DemoRecorder.Instance.Demo.ToString());
+            //Game.Start();
         }
 
         static Cell GetCell(int x, int y)

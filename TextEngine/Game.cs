@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TextEngine.Demos;
+
 namespace TextEngine
 {
     //'Game' is used as a class to handle functions and stuff
@@ -14,9 +16,9 @@ namespace TextEngine
     {
         public static string ToolBar { get; set; } = "";
 
-        private static Thread RenderThread;
-        private static Thread InputThread;
-        private static Thread GameThread;
+        internal static Thread RenderThread;
+        internal static Thread InputThread;
+        internal static Thread GameThread;
 
         internal static int ThreadsRunning = 0;
 
@@ -52,6 +54,8 @@ namespace TextEngine
             get; private set;
         }
 
+        public static bool IsDemo;
+
         public static ulong GameLoopCalls { get; private set; }
 
         internal static bool Running = true;
@@ -79,7 +83,7 @@ namespace TextEngine
         public static event GameQuitHandler OnQuitGame;
         public static event GamePauseHandler OnPauseGame;
 
-        public static void Start()
+        private static void Initialise()
         {
             ConsoleColourManager.Enable();
             Console.OutputEncoding = new UnicodeEncoding();
@@ -87,26 +91,6 @@ namespace TextEngine
 
             //All render thread needs to do is call redraw
             RenderThread = new(() => { ThreadsRunning++; while (Running) Render.Redraw(); ThreadsRunning--; });
-
-            //Input thread gets the user key press
-            InputThread = new(() =>
-            {
-                ThreadsRunning++;
-                while (Running)
-                {
-                    var KeyPress = Console.ReadKey(true).Key;
-                    int gameObjects = GameObjects.Count;
-                    for (int i = 0; i < gameObjects; i++)
-                    {
-                        if (GameObjects.Count <= i)
-                            //a gameobject got killed
-                            break;
-                        GameObjects[i].KeyPress(KeyPress);
-                    }
-                    WaitUntilUnpause();
-                }
-                ThreadsRunning--;
-            });
 
             //GameThread is used to call each object's update method
             GameThread = new(() => { ThreadsRunning++; while (Running) GameTick(); ThreadsRunning--; });
@@ -127,8 +111,24 @@ namespace TextEngine
             Running = true;
         }
 
+        public static void Start()
+        {
+            //Input thread gets the user key press
+            InputThread = new(InputTick);
+            Initialise();
+        }
+
+        public static void Start(Demo demo)
+        {
+            //Input thread gets the user key press
+            InputThread = new(demo.Play);
+            IsDemo = true;
+            Initialise();
+        }
+
         private static void GameTick()
         {
+            ThreadsRunning++;
             while (Running)
             {
                 Stopwatch timer = new();
@@ -148,6 +148,19 @@ namespace TextEngine
                 CallsPerSecond = 1000f / timer.ElapsedMilliseconds;
                 WaitUntilUnpause();
             }
+            ThreadsRunning--;
+        }
+
+        private static void InputTick()
+        {
+            ThreadsRunning++;
+            while (Running)
+            {
+                var KeyPress = Console.ReadKey(true).Key;
+                PressKey(KeyPress);
+                WaitUntilUnpause();
+            }
+            ThreadsRunning--;
         }
 
         public static void Stop()
@@ -182,12 +195,43 @@ namespace TextEngine
             GameObjects.Add(obj);
         }
 
+        public static void PressKey(ConsoleKey key)
+        {
+            int gameObjects = GameObjects.Count;
+            for (int i = 0; i < gameObjects; i++)
+            {
+                if (GameObjects.Count <= i)
+                    //a gameobject got killed
+                    break;
+                GameObjects[i].KeyPress(key);
+            }
+        }
+
         /// <summary> Stop the game and ask a question</summary>
         public static string Ask()
         {
+            if (IsDemo)
+            {
+                string Answer = Demo.DemoAnswer;
+                Demo.DemoAnswer = Demo.Instance.GetNextAnswer();
+                return Answer;
+            }
+
+            Stopwatch TimerForAnswer = new();
+            TimerForAnswer.Start();
+
             Timer.Stop(); //so the FPS isn't incorrect
             AskingQuestion = true;
+
             string answer = Console.ReadLine();
+
+            if (DemoRecorder.Instance != null)
+            {
+                DemoRecorder.Instance.DemoInputs.Add(new Demo.Delay(TimerForAnswer.ElapsedMilliseconds));
+                DemoRecorder.Instance.DemoInputs.Add(new Demo.Question(answer));
+                TimerForAnswer.Stop();
+            }
+
             Timer.Start();
 
             //So you don't see your answer ages after

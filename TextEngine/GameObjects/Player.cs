@@ -18,7 +18,6 @@ namespace TextEngine.GameObjects
         {
             HasCollision = false;
             Vector2D movement = new();
-            Scale movement2 = new();
 
             if (key == ConsoleKey.W)
             {
@@ -31,66 +30,7 @@ namespace TextEngine.GameObjects
                 Character = 'V';
             }
 
-            if (key == ConsoleKey.A)
-            {
-                movement.X -= 1;
-                Character = '<';
-            }
-            if (key == ConsoleKey.D)
-            {
-                movement.X+=1;
-                Character = '>';
-            }
-
-
-            if (key == ConsoleKey.I)
-            {
-                movement2.height -= 1;
-                Character = '^';
-            }
-            if (key == ConsoleKey.K)
-            {
-                movement2.height += 1;
-                Character = 'V';
-            }
-
-            if (key == ConsoleKey.J)
-            {
-                movement2.width -= 1;
-                Character = '<';
-            }
-
-            if (key == ConsoleKey.L)
-            {
-                movement2.width += 1;
-                Character = '<';
-            }
-
-            if (key == ConsoleKey.P)
-            {
-                Game.Paused = !Game.Paused;
-            }
-
-            if (key == ConsoleKey.C)
-            {
-                //Color = Color.Random();
-            }
-
-            if (key == ConsoleKey.H)
-            {
-                //Highlight = Color.Random();
-            }
-
-            //if (key == ConsoleKey.J)
-            //    Game.ScreenPos += new Vector2D(1, 1);
-
-            //Game.ScreenPos += movement;
-            //Game.Screen += movement2;
-
             Move(movement);
-            //Camera.Instance.Position = Position;
-            if (key == ConsoleKey.Escape)
-                Game.Stop();
         }
 
         public override void OnCollision(GameObject type, Vector2D Displacement)
