@@ -68,7 +68,7 @@ namespace TextEngine
             }
 
             //Stores colour data
-            (Color c, Color h, TextFormatting t, uint renderOrder)[,] colours = new (Color, Color, TextFormatting, uint)[Game.Screen.width, Game.Screen.height];
+            (Cell cell, uint renderOrder)[,] colours = new (Cell, uint)[Game.Screen.width, Game.Screen.height];
 
             try
             {
@@ -99,7 +99,7 @@ namespace TextEngine
                             frame[renderPos.Y] = line.ToString();
 
                             Cell cell = obj.texture[i, j];
-                            colours[renderPos.X, renderPos.Y] = (cell.Color, cell.Highlight, cell.Formatting, obj.RenderOrder);
+                            colours[renderPos.X, renderPos.Y] = (cell, obj.RenderOrder);
                         }
                     }
                 }
@@ -168,7 +168,7 @@ namespace TextEngine
             Console.Write(Game.ToolBar);
         }
 
-        private static string GetLine(string UncolouredFrame, (Color c, Color h, TextFormatting f, uint renderOrder)[,] ColourData, int Ypos)
+        private static string GetLine(string UncolouredFrame, (Cell cell, uint renderOrder)[,] ColourData, int Ypos)
         {
             //Merge colourData and the frame
 
@@ -191,10 +191,10 @@ namespace TextEngine
             return s;
         }
 
-        static string GetColour(char input, (Color colour, Color highlight, TextFormatting format, uint renderOrder) colourData)
+        static string GetColour(char input, (Cell cell, uint renderOrder) colourData)
         {
             string inputStr = input.ToString();
-            inputStr = inputStr.Colourize(colourData.colour, colourData.highlight, colourData.format);
+            inputStr = inputStr.Colourize(colourData.cell.Color, colourData.cell.Highlight, colourData.cell.Formatting);
             return inputStr;
         }
 
