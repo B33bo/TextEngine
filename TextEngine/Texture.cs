@@ -33,7 +33,7 @@ namespace TextEngine
 
         public Texture(string[] s)
         {
-            cells = GetCells(s, null, null);
+            cells = GetCells(s, null, null, null);
             CustomIndexer = null;
         }
 
@@ -43,21 +43,27 @@ namespace TextEngine
             CustomIndexer = null;
         }
 
-        public Texture(char s, Color color, Color background)
+        public Texture(char s, Color color, Color background, TextFormatting formatting)
         {
-            cells = new Cell[,] { { new Cell(s, color, background) } };
+            cells = new Cell[,] { { new Cell(s, color, background, formatting) } };
             CustomIndexer = null;
         }
 
         public Texture(string[] s, Color[,] colour)
         {
-            cells = GetCells(s, colour, null);
+            cells = GetCells(s, colour, null, null);
             CustomIndexer = null;
         }
 
         public Texture(string[] s, Color[,] colour, Color[,] highlight)
         {
-            cells = GetCells(s, colour, highlight);
+            cells = GetCells(s, colour, highlight, null);
+            CustomIndexer = null;
+        }
+
+        public Texture(string[] s, Color[,] colour, Color[,] highlight, TextFormatting[,] formattings)
+        {
+            cells = GetCells(s, colour, highlight, formattings);
             CustomIndexer = null;
         }
 
@@ -83,10 +89,11 @@ namespace TextEngine
             CustomIndexer = null;
         }
 
-        private static Cell[,] GetCells(string[] lines, Color[,] colour, Color[,] highlight)
+        private static Cell[,] GetCells(string[] lines, Color[,] colour, Color[,] highlight, TextFormatting[,] formatting)
         {
             bool UseColour = colour != null;
             bool UseHighlight = highlight != null;
+            bool UseFormatting = formatting != null;
 
             int LengthOfCells = 0;
             for (int i = 0; i < lines.Length; i++)
@@ -101,8 +108,9 @@ namespace TextEngine
             {
                 for (int x = 0; x < LengthOfCells; x++)
                 {
-                    Color Colour = UseColour ? colour[x, y] : Color.Default;
-                    Color Highlight = UseHighlight ? highlight[x, y] : Color.Default;
+                    Color Colour = UseColour ? colour[y, x] : Color.Default;
+                    Color Highlight = UseHighlight ? highlight[y, x] : Color.Default;
+                    TextFormatting Format = UseFormatting ? formatting[y, x] : TextFormatting.None;
 
                     if (lines[x].Length < LengthOfCells)
                     {
@@ -114,11 +122,11 @@ namespace TextEngine
                          * with a hole in it
                          */
 
-                        returnValue[x, y] = new(' ', Colour, Highlight);
+                        returnValue[x, y] = new(' ', Colour, Highlight, Format);
                         continue;
                     }
 
-                    returnValue[x, y] = new(lines[x][y], Colour, Highlight);
+                    returnValue[x, y] = new(lines[y][x], Colour, Highlight, Format);
                 }
             }
 
@@ -147,6 +155,17 @@ namespace TextEngine
             }
         }
 
+        public void SetFormatting(TextFormatting formatting)
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    cells[i, j].Formatting = formatting;
+                }
+            }
+        }
+
         public static implicit operator Texture(Cell[,] c) => new(c);
 
         public static implicit operator Texture(string[] s) => new(s);
@@ -157,11 +176,13 @@ namespace TextEngine
     {
         public char Character;
         public Color Color, Highlight;
+        public TextFormatting Formatting;
 
         public Cell(char Char)
         {
             Character = Char;
             Color = Color.Default; Highlight = Color.Default;
+            Formatting = TextFormatting.None;
         }
 
         public Cell(char Char, Color Color)
@@ -169,6 +190,7 @@ namespace TextEngine
             Character = Char;
             this.Color = Color;
             Highlight = Color.Default;
+            Formatting = TextFormatting.None;
         }
 
         public Cell(char Char, Color Color, Color Highlight)
@@ -176,13 +198,20 @@ namespace TextEngine
             Character = Char;
             this.Color = Color;
             this.Highlight = Highlight;
+            Formatting = TextFormatting.None;
         }
 
-        public void SetColor(Color Color)
+        public Cell(char Char, Color Color, Color Highlight, TextFormatting formatting)
         {
+            Character = Char;
             this.Color = Color;
+            this.Highlight = Highlight;
+            Formatting = formatting;
         }
+
+        public void SetColor(Color Color) => this.Color = Color;
         public void SetHighlight(Color Highlight) => this.Highlight = Highlight;
         public void SetCharacter(char Character) => this.Character = Character;
+        public void SetFormatting(TextFormatting formatting) => this.Formatting = formatting;
     }
 }

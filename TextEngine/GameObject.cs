@@ -13,7 +13,7 @@ namespace TextEngine
         public char Character
         {
             get => texture[0, 0].Character;
-            set => texture = new(value, Color, Highlight);
+            set => texture = new(value, Color, Highlight, Formatting);
         }
 
         public Vector2D Position;
@@ -32,6 +32,12 @@ namespace TextEngine
         {
             get => texture[0, 0].Highlight;
             set => texture.SetHighlight(value);
+        }
+
+        public TextFormatting Formatting
+        {
+            get => texture[0, 0].Formatting;
+            set => texture.SetFormatting(value);
         }
 
         public Scale Scale;

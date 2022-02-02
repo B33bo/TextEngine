@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TextEngine
 {
@@ -23,15 +19,15 @@ namespace TextEngine
         public static Color Default { get; } = new(0, 0, 0);
         #endregion
 
-        public static bool ConsoleColoursAllowed;
+        public static bool ConsoleColoursAllowed { get; internal set; }
 
         public byte R, G, B;
 
-        public const int Foreground = 38;
-        public const int Background = 48;
+        public const int FOREGROUND = 38;
+        public const int BACKGROUND = 48;
 
-        const char start = '\u001b';
-        public const string EndColour = "\u001b[0m";
+        public const char START_COLOUR = '\u001b';
+        public const string END_COLOUR = "\u001b[0m";
 
         public Color(byte R, byte G, byte B)
         {
@@ -95,7 +91,7 @@ namespace TextEngine
             if (this == Color.Default)
                 return "";
 
-            return $"{start}[{type};2;{R};{G};{B}m";
+            return $"{START_COLOUR}[{type};2;{R};{G};{B}m";
         }
 
         public static string ToConsoleColor(Color foreground, Color background)
@@ -105,7 +101,17 @@ namespace TextEngine
             //semi-colons are used for seperation
             //foreground is 38 and background is 48
 
-            return foreground.ToConsoleColor(Foreground) + background.ToConsoleColor(Background);
+            return foreground.ToConsoleColor(FOREGROUND) + background.ToConsoleColor(BACKGROUND);
+        }
+
+        public static string ToConsoleColor(Color foreground, Color background, TextFormatting formatting)
+        {
+            //escseq[;foreground;"2";R;G;B"m"
+            //escseq[ is a character that tells the console that this is a colour input
+            //semi-colons are used for seperation
+            //foreground is 38 and background is 48
+
+            return formatting.ToConsoleColor() + foreground.ToConsoleColor(FOREGROUND) + background.ToConsoleColor(BACKGROUND);
         }
 
         public static Color Random()
@@ -200,7 +206,7 @@ namespace TextEngine
             if (!Color.ConsoleColoursAllowed || foreground == Color.Default)
                 return s;
 
-            return foreground.ToConsoleColor(Color.Foreground) + s + Color.EndColour;
+            return foreground.ToConsoleColor(Color.FOREGROUND) + s + Color.END_COLOUR;
         }
 
         public static string Colourize(this string s, Color foreground, Color background)
@@ -211,7 +217,18 @@ namespace TextEngine
             if (foreground == Color.Default && background == Color.Default)
                 return s;
 
-            return Color.ToConsoleColor(foreground, background) + s + Color.EndColour;
+            return Color.ToConsoleColor(foreground, background) + s + Color.END_COLOUR;
+        }
+
+        public static string Colourize(this string s, Color foreground, Color background, TextFormatting formatting)
+        {
+            if (!Color.ConsoleColoursAllowed)
+                return s;
+
+            if (foreground == Color.Default && background == Color.Default && formatting == TextFormatting.None)
+                return s;
+
+            return Color.ToConsoleColor(foreground, background, formatting) + s + Color.END_COLOUR;
         }
 
         public static string ColourizeBackground(this string s, Color background)
@@ -219,7 +236,23 @@ namespace TextEngine
             if (!Color.ConsoleColoursAllowed || background == Color.Default)
                 return s;
 
-            return background.ToConsoleColor(Color.Background) + s + Color.EndColour;
+            return background.ToConsoleColor(Color.BACKGROUND) + s + Color.END_COLOUR;
+        }
+
+        public static string ToConsoleColor(this TextFormatting formatting)
+        {
+            string str = "";
+
+            if ((formatting & TextFormatting.Bold) == TextFormatting.Bold)
+                str += Color.START_COLOUR + "[1m";
+
+            if ((formatting & TextFormatting.Underline) == TextFormatting.Underline)
+                str += Color.START_COLOUR + "[4m";
+
+            if ((formatting & TextFormatting.Inverse) == TextFormatting.Inverse)
+                str += Color.START_COLOUR + "[7m";
+
+            return str;
         }
     }
 
@@ -257,5 +290,13 @@ namespace TextEngine
                 Color.ConsoleColoursAllowed = false;
             }
         }
+    }
+
+    public enum TextFormatting
+    {
+        None = 0,
+        Bold = 1,
+        Underline = 2,
+        Inverse = 4,
     }
 }

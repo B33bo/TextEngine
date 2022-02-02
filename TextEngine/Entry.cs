@@ -21,25 +21,25 @@ namespace TextEngine
         static void Main(string[] args)
         {
             ConsoleColourManager.Enable();
+            Console.ResetColor();
 
             Game.Screen = new(10, 10);
             Player player = new();
             player.HasCollision = true;
 
-            //Wall wall = new();
+            Wall wall = new();
             //wall.Texture = new(GetCell);
 
             //Wall.instance = wall;
 
-            //Game.AddObject(wall);
+            Game.AddObject(wall);
             Game.AddObject(player);
 
             //Console.WriteLine((ConsoleKey)'\r');
-            Console.ReadKey();
             //new Demo.KeyPress('a'), new Demo.KeyPress('w'), new Demo.Loop()});
             Game.Start();
 
-            Game.AddObject(new DemoRecorder());
+            //Game.AddObject(new DemoRecorder());
 
             Game.OnQuitGame += () => Console.WriteLine(DemoRecorder.Instance.Demo.ToString());
             //Game.Start();

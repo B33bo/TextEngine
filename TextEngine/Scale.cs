@@ -95,5 +95,10 @@ namespace TextEngine
         {
             return base.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return $"{width}x{height}";
+        }
     }
 }

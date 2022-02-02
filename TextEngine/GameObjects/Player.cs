@@ -11,12 +11,14 @@ namespace TextEngine.GameObjects
     {
         public Player()
         {
+            HasCollision = true;
             texture = new(new string[] { "c" }, new Color[,] { { Color.Default } }, new Color[,] { { Color.Red } });
+
+            Scale = new(5, 5);
         }
 
         public override void KeyPress(ConsoleKey key)
         {
-            HasCollision = false;
             Vector2D movement = new();
 
             if (key == ConsoleKey.W)
@@ -30,16 +32,33 @@ namespace TextEngine.GameObjects
                 Character = 'V';
             }
 
+            if (key == ConsoleKey.A)
+            {
+                movement.X -= 1;
+                Character = '<';
+            }
+            if (key == ConsoleKey.D)
+            {
+                movement.X += 1;
+                Character = '>';
+            }
+
+            if (key == ConsoleKey.F)
+            {
+                Formatting++;
+            }
+
             Move(movement);
         }
 
         public override void OnCollision(GameObject type, Vector2D Displacement)
         {
+            Game.ToolBar = "HIT";
         }
 
         public override void Update()
         {
-            Game.ToolBar = $"{Position} {Render.FPS,-10} {Game.CallsPerSecond} {StressTest.items}";
+            //Game.ToolBar = $"{Position} {Render.FPS,-10} {Game.CallsPerSecond} {StressTest.items}";
 
         }
     }
