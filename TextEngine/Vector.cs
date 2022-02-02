@@ -155,5 +155,15 @@ namespace TextEngine
         {
             return base.GetHashCode();
         }
+
+        public static Vector2D ScreenMiddleCenter
+        {
+            get => new(Console.WindowWidth / 2, Console.WindowHeight / 2);
+        }
+
+        public static Vector2D ScreenBottomRight
+        {
+            get => new(Console.WindowWidth, Console.WindowHeight);
+        }
     }
 }

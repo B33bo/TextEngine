@@ -11,10 +11,10 @@ namespace TextEngine.GameObjects
     {
         public Player()
         {
+            Formatting = TextFormatting.Underline | TextFormatting.Inverse;
             HasCollision = true;
-            texture = new(new string[] { "c" }, new Color[,] { { Color.Default } }, new Color[,] { { Color.Red } });
+            //texture = new(new string[] { "c" }, new Color[,] { { Color.Default } }, new Color[,] { { Color.Red } });
 
-            Scale = new(5, 5);
         }
 
         public override void KeyPress(ConsoleKey key)

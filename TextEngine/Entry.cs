@@ -32,7 +32,7 @@ namespace TextEngine
 
             //Wall.instance = wall;
 
-            Game.AddObject(wall);
+            //Game.AddObject(wall);
             Game.AddObject(player);
 
             //Console.WriteLine((ConsoleKey)'\r');
