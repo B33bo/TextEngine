@@ -13,13 +13,13 @@ namespace TextEngine
     {
         public static Camera Instance { get; private set; }
 
-        public static int Left { get => Instance is null ? 0 : Instance.Position.X; }
-        public static int Right {
-            get => Instance is null ? 0 : Instance.Position.X + Game.Screen.width - 1;
-        }
+        public static int Right { get => Instance.Position.X + Game.Screen.width - 1; }
 
-        public static int Top { get => Instance is null ? -1 : Instance.Position.Y; }
-        public static int Bottom { get => Instance is null ? -1 : Instance.Position.Y + Game.Screen.height - 1; }
+        private static int Bottom { get => Instance.Position.Y + Game.Screen.height - 1; }
+
+        public static Vector2D TopLeft { get => Instance.Position; }
+
+        public static Vector2D BottomRight { get => new(Right, Bottom); }
 
         public Camera()
         {

@@ -85,6 +85,7 @@ namespace TextEngine
 
         private static void Initialise()
         {
+            Random.ResetRandom();
             ConsoleColourManager.Enable();
             Console.OutputEncoding = new UnicodeEncoding();
             Timer = new();
@@ -180,10 +181,7 @@ namespace TextEngine
             }
 #pragma warning restore SYSLIB0006 // Type or member is obsolete
 
-            while (ThreadsRunning != 0)
-            {
-                //Wait
-            }
+            while (ThreadsRunning != 0) ;
 
             Console.Clear();
             if (OnQuitGame != null)
@@ -225,12 +223,8 @@ namespace TextEngine
 
             string answer = Console.ReadLine();
 
-            if (DemoRecorder.Instance != null)
-            {
-                DemoRecorder.Instance.DemoInputs.Add(new Demo.Delay(TimerForAnswer.ElapsedMilliseconds));
-                DemoRecorder.Instance.DemoInputs.Add(new Demo.Question(answer));
-                TimerForAnswer.Stop();
-            }
+            DemoRecorder.TryAdd(new Demo.Delay(TimerForAnswer.ElapsedMilliseconds));
+            TimerForAnswer.Stop();
 
             Timer.Start();
 
@@ -260,10 +254,7 @@ namespace TextEngine
                 while (AskingQuestion) { }
             }
 
-            while (Paused)
-            {
-
-            }
+            while (Paused) ;
         }
 
         public delegate void GameQuitHandler();

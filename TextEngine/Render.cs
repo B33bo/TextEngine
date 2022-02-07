@@ -20,7 +20,7 @@ namespace TextEngine
 
         internal static Scale oldScale;
 
-        public static Action customRenderCode;
+        public static string[] CurrentFrame { get; private set; }
 
         internal static void Redraw()
         {
@@ -122,7 +122,11 @@ namespace TextEngine
 
                 Console.SetCursorPosition(drawAtX < 0 ? 0 : drawAtX, i + Game.ScreenPos.Y);
 
-                string currentFrame = beforeFrame + GetLine(frame[i], colours, i) + "|";
+                string currentFrame = GetLine(frame[i], colours, i) + "|";
+
+                frame[i] = currentFrame;
+
+                currentFrame = beforeFrame + currentFrame;
 
                 if (drawAtX < 0 && drawAtX < -currentFrame.Length)
                     continue;
@@ -134,8 +138,7 @@ namespace TextEngine
             }
             //Write(frame, colours);
 
-            if (customRenderCode != null)
-                customRenderCode.Invoke();
+            CurrentFrame = frame;
 
             FPS = 1000f / s.ElapsedMilliseconds;
 

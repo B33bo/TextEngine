@@ -12,14 +12,12 @@ namespace TextEngine.Demos
     {
         public static DemoRecorder Instance { get; private set; }
         private Stopwatch stopwatch;
-        internal List<Demo.DemoInputType> DemoInputs = new();
+        public List<Demo.DemoInputType> DemoInputs = new();
 
         public Demo Demo
         {
-            get
-            {
-                return new(DemoInputs);
-            }
+            get =>
+                new(DemoInputs);
         }
 
         public DemoRecorder()
@@ -42,5 +40,13 @@ namespace TextEngine.Demos
         public override void OnCollision(GameObject collision, Vector2D displacement) { }
 
         public override void Update() { }
+
+        public static void TryAdd(Demo.DemoInputType input)
+        {
+            if (Instance is null)
+                return;
+
+            Instance.DemoInputs.Add(input);
+        }
     }
 }

@@ -14,6 +14,14 @@ namespace TextEngine
             get => Math.Sqrt(X * X + Y * Y);
         }
 
+        public static Vector2D Zero { get => new(0, 0); }
+        public static Vector2D One { get => new(1, 1); }
+
+        public static Vector2D Up { get => new(0, -1); }
+        public static Vector2D Down { get => new(0, 1); }
+        public static Vector2D Left { get => new(-1, 0); }
+        public static Vector2D Right { get => new(1, 0); }
+
         public Vector2D(int X, int Y)
         {
             this.X = X;
@@ -68,10 +76,13 @@ namespace TextEngine
 
         public bool InCameraBounds()
         {
-            if (X > Camera.Right || X < Camera.Left)
+            Vector2D TopLeft = Camera.TopLeft;
+            Vector2D BottomRight = Camera.BottomRight;
+
+            if (X > Camera.Right || X < TopLeft.X)
                 return false;
 
-            if (Y < Camera.Top || Y > Camera.Bottom)
+            if (Y < TopLeft.Y || Y > Camera.BottomRight.Y)
                 return false;
 
             return true;
@@ -109,16 +120,6 @@ namespace TextEngine
         public override bool Equals(object obj)
         {
             return (Vector2D)obj == this;
-        }
-
-        public static Vector2D Random()
-        {
-            Random rnd = new();
-            int x = rnd.Next(0, Game.Screen.width);
-            rnd = new(rnd.Next());
-            int y = rnd.Next(0, Game.Screen.height);
-
-            return new(x, y);
         }
 
         public static Vector2D Parse(string s)

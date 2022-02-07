@@ -10,7 +10,6 @@ namespace TextEngine.GameObjects
     internal class StressTest : GameObject
     {
         static long lastMS;
-        Random rnd = new();
         public static int items;
         static string[] tex =
         {
@@ -22,7 +21,7 @@ namespace TextEngine.GameObjects
 
         public StressTest()
         {
-            Position = Vector2D.Random();
+            Position = Random.Vector(Camera.Instance.Position, Vector2D.ScreenBottomRight);
             items++;
 
             //Texture = new((x, y) => new Cell((char)(x + y + 97), Game.RandomColor()));
@@ -32,8 +31,8 @@ namespace TextEngine.GameObjects
 
         public override void KeyPress(ConsoleKey key)
         {
-            rnd = new(rnd.Next());
-            Move(new (rnd.Next(-1, 1), rnd.Next(-1, 1)));
+            //rnd = new(rnd.Next());
+            //Move(new (rnd.Next(-1, 1), rnd.Next(-1, 1)));
 
             if (key == ConsoleKey.Spacebar)
             {
@@ -44,7 +43,7 @@ namespace TextEngine.GameObjects
 
         public override void OnCollision(GameObject collision, Vector2D displacement)
         {
-            Color = Color.Random();
+            Color = Random.Color();
         }
 
         public override void Update()
@@ -54,7 +53,7 @@ namespace TextEngine.GameObjects
                 lastMS = Game.Timer.ElapsedMilliseconds;
                 //Position = Vector2D.Random();
             }
-            Color newCol = Color.Random();
+            Color newCol = Random.Color();
             texture.SetCellColor(0, 0, newCol);
         }
     }

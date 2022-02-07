@@ -114,20 +114,6 @@ namespace TextEngine
             return formatting.ToConsoleColor() + foreground.ToConsoleColor(FOREGROUND) + background.ToConsoleColor(BACKGROUND);
         }
 
-        public static Color Random()
-        {
-            System.Random rnd = new();
-            Color c = new();
-
-            byte[] colourData = new byte[3];
-            rnd.NextBytes(colourData);
-
-            c.R = colourData[0];
-            c.G = colourData[1];
-            c.B = colourData[2];
-            return c;
-        }
-
         #region Operators
         public static Color operator +(Color a, Color b)
         {
@@ -199,7 +185,7 @@ namespace TextEngine
         #endregion
     }
 
-    static class ColourExtensions
+    public static class ColourExtensions
     {
         public static string Colourize(this string s, Color foreground)
         {

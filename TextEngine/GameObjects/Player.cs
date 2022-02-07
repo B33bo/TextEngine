@@ -45,7 +45,12 @@ namespace TextEngine.GameObjects
 
             if (key == ConsoleKey.F)
             {
-                Formatting++;
+                Game.ToolBar += " " + Random.String(5);
+            }
+
+            if (key == ConsoleKey.C)
+            {
+                Game.Stop();
             }
 
             Move(movement);
@@ -53,7 +58,7 @@ namespace TextEngine.GameObjects
 
         public override void OnCollision(GameObject type, Vector2D Displacement)
         {
-            Game.ToolBar = "HIT";
+            
         }
 
         public override void Update()

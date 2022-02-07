@@ -37,11 +37,12 @@ namespace TextEngine
 
             //Console.WriteLine((ConsoleKey)'\r');
             //new Demo.KeyPress('a'), new Demo.KeyPress('w'), new Demo.Loop()});
-            Game.Start();
+            Game.AddObject(new DemoRecorder());
 
-            //Game.AddObject(new DemoRecorder());
 
             Game.OnQuitGame += () => Console.WriteLine(DemoRecorder.Instance.Demo.ToString());
+
+            Game.Start(new Demo(@"C:\Users\B33bo\Desktop\demo.txt"));
             //Game.Start();
         }
 
