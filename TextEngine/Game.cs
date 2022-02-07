@@ -91,10 +91,26 @@ namespace TextEngine
             Timer = new();
 
             //All render thread needs to do is call redraw
-            RenderThread = new(() => { ThreadsRunning++; while (Running) Render.Redraw(); ThreadsRunning--; });
+            RenderThread = new(() =>
+            {
+                ThreadsRunning++;
+                while (Running)
+                {
+                    Render.Redraw();
+                }
+                ThreadsRunning--;
+            });
 
             //GameThread is used to call each object's update method
-            GameThread = new(() => { ThreadsRunning++; while (Running) GameTick(); ThreadsRunning--; });
+            GameThread = new(() =>
+            {
+                ThreadsRunning++;
+                while (Running)
+                {
+                    GameTick();
+                }
+                ThreadsRunning--;
+            });
 
             Console.Clear();
 
@@ -130,25 +146,22 @@ namespace TextEngine
         private static void GameTick()
         {
             ThreadsRunning++;
-            while (Running)
+            Stopwatch timer = new();
+            timer.Start();
+
+            for (int i = 0; i < GameObjects.Count; i++)
             {
-                Stopwatch timer = new();
-                timer.Start();
+                GameLoopCalls++;
+                GameObject gm = GameObjects[i];
 
-                for (int i = 0; i < GameObjects.Count; i++)
-                {
-                    GameLoopCalls++;
-                    GameObject gm = GameObjects[i];
+                if (gm == null)
+                    continue;
 
-                    if (gm == null)
-                        continue;
-
-                    gm.Update();
-                }
-
-                CallsPerSecond = 1000f / timer.ElapsedMilliseconds;
-                WaitUntilUnpause();
+                gm.Update();
             }
+
+            CallsPerSecond = 1000f / timer.ElapsedMilliseconds;
+            WaitUntilUnpause();
             ThreadsRunning--;
         }
 
@@ -181,7 +194,7 @@ namespace TextEngine
             }
 #pragma warning restore SYSLIB0006 // Type or member is obsolete
 
-            while (ThreadsRunning != 0) ;
+            while (ThreadsRunning > 1) ;
 
             Console.Clear();
             if (OnQuitGame != null)

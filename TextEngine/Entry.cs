@@ -40,10 +40,14 @@ namespace TextEngine
             Game.AddObject(new DemoRecorder());
 
 
-            Game.OnQuitGame += () => Console.WriteLine(DemoRecorder.Instance.Demo.ToString());
+            Game.OnQuitGame += () =>
+            { DASD(); };
 
-            Game.Start(new Demo(@"C:\Users\B33bo\Desktop\demo.txt"));
-            //Game.Start();
+            Game.Start();
+        }
+
+        static void DASD()
+        {
         }
 
         static Cell GetCell(int x, int y)
