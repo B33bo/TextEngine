@@ -64,8 +64,6 @@ namespace TextEngine.GameObjects
         public override void Update()
         {
             //Game.ToolBar = $"{Position} {Render.FPS,-10} {Game.CallsPerSecond} {StressTest.items}";
-            if (Game.Timer.ElapsedMilliseconds > 1000)
-                Game.Stop();
         }
     }
 }

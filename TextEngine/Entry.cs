@@ -41,9 +41,9 @@ namespace TextEngine
 
 
             Game.OnQuitGame += () =>
-            { DASD(); };
+            { Console.WriteLine(DemoRecorder.Instance.Demo.ToString()); };
 
-            Game.Start();
+            Game.Start(new Demo(@"C:\Users\B33bo\Desktop\ExampleDemo.txt"));
         }
 
         static void DASD()

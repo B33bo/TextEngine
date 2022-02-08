@@ -10,6 +10,16 @@ namespace TextEngine.Demos
 {
     public class Demo
     {
+        private static Dictionary<string, Type> _DemoInputTypes = new()
+        {
+            { "delay", typeof(Delay) },
+            { "input", typeof(KeyPress) },
+            { "question", typeof(Question) },
+            { "loop", typeof(Loop) },
+            { "seed", typeof(RandomSeed) },
+            { "invalid", typeof(Invalid) },
+        };
+
         internal static string DemoAnswer;
         internal static Demo Instance { get; private set; }
         private static int LastQuestionIndex = 0;
@@ -25,55 +35,22 @@ namespace TextEngine.Demos
 
             for (int i = 0; i < UnparsedDemo.Length; i++)
             {
-                string[] Parameters = UnparsedDemo[i].Split(',');
-
-                switch (Parameters[0].ToLower())
+                string[] Parameters = UnparsedDemo[i].Trim().Split(',');
+                try
                 {
-                    default:
-                        Inputs[i] = new Invalid(i, $"Unknown command \"{Parameters[0]}\"");
-                        break;
-                    case "delay":
-                        if (Parameters.Length < 2) { Inputs[i] = new Invalid(i, "Not enough params"); break; }
-
-                        if (!int.TryParse(Parameters[1], out int delay))
-                        {
-                            Inputs[i] = new Invalid(i, $"{Parameters[1]} Not a string");
-                            break;
-                        }
-
-                        Inputs[i] = new Delay(delay);
-                        break;
-                    case "input":
-                        if (Parameters.Length < 2) { Inputs[i] = new Invalid(i, "Not enough params"); break; }
-
-                        if (Parameters[1] == "enter")
-                            Inputs[i] = new KeyPress(ConsoleKey.Enter);
-                        else if (Parameters[1].Length == 0)
-                            Inputs[i] = new Invalid(i, "Not enough params");
-                        else
-                            Inputs[i] = new KeyPress(Parameters[1][0]);
-
-                        break;
-                    case "question":
-                        if (Parameters.Length < 2) { Inputs[i] = new Invalid(i, "Not enough params"); break; }
-                        Inputs[i] = new Question(Parameters[1]);
-                        break;
-                    case "loop":
-                        Inputs[i] = new Loop();
-                        break;
-                    case "seed":
-                        if (Parameters.Length < 2) { Inputs[i] = new Invalid(i, "Not enough params"); break; }
-
-                        if (!int.TryParse(Parameters[1], out int seed))
-                        {
-                            Inputs[i] = new Invalid(i, $"{Parameters[1]} Not a number");
-                            break;
-                        }
-
-                        Inputs[i] = new RandomSeed(seed);
-                        break;
+                    string[][] ParametersToPass = { Parameters };
+                    Inputs[i] = (DemoInputType)Activator.CreateInstance(_DemoInputTypes[Parameters[0].ToLower()], ParametersToPass);
+                }
+                catch (Exception e)
+                {
+                    Inputs[i] = new Invalid(i, $"{Parameters[0]} isn't a demo type", e);
                 }
             }
+        }
+
+        public static void AddDemoType(string Name, Type type)
+        {
+            _DemoInputTypes.Add(Name.ToLower(), type);
         }
 
         internal string GetNextAnswer()
@@ -98,13 +75,15 @@ namespace TextEngine.Demos
                 if (Inputs[i] is Loop)
                     i = 0;
 
-                Inputs[i].OnPressed();
+                Inputs[i].OnCalled();
             }
         }
 
         public abstract class DemoInputType
         {
-            public abstract void OnPressed();
+            public abstract void OnCalled();
+
+            public DemoInputType() { }
         }
 
         public override string ToString()
@@ -122,9 +101,12 @@ namespace TextEngine.Demos
         {
             public int Milliseconds;
 
-            public Delay(long Ms) => Milliseconds = (int)Ms;
+            public Delay(long MS) => Milliseconds = (int)MS;
 
-            public override void OnPressed()
+            public Delay(string[] args) =>
+                Milliseconds = int.Parse(args[1]);
+
+            public override void OnCalled()
             {
                 Thread.Sleep(Milliseconds);
             }
@@ -140,7 +122,11 @@ namespace TextEngine.Demos
             public KeyPress(ConsoleKey key) => Key = key;
             public KeyPress(char key) => Key = (ConsoleKey)(key.ToString().ToUpper()[0]);
 
-            public override void OnPressed()
+            public KeyPress(string[] args) =>
+                Key = (ConsoleKey)(args[1].ToUpper()[0]);
+
+
+            public override void OnCalled()
             {
                 Game.PressKey(Key);
             }
@@ -155,7 +141,10 @@ namespace TextEngine.Demos
 
             public Question(string question) { QuestionText = question; }
 
-            public override void OnPressed()
+            public Question(string[] args) =>
+                QuestionText = args[1];
+
+            public override void OnCalled()
             { }
 
             public override string ToString() =>
@@ -166,14 +155,25 @@ namespace TextEngine.Demos
         {
             int index;
             string ErrorMessage;
+            Exception exception;
 
-            public Invalid(int index, string ErrorMessage)
+            public Invalid(int index, string ErrorMessage, Exception e)
             {
                 this.index = index;
                 this.ErrorMessage = ErrorMessage;
+                this.exception = e;
             }
 
-            public override void OnPressed() { }
+            public Invalid(string[] args)
+            {
+                index = int.Parse(args[1]);
+                ErrorMessage = args[2];
+            }
+
+            public override void OnCalled()
+            {
+                //throw new InvalidDemoException($"AT: {index} " + ErrorMessage, exception);
+            }
 
             public override string ToString() =>
                 "invalid";
@@ -181,7 +181,9 @@ namespace TextEngine.Demos
 
         public class Loop : DemoInputType
         {
-            public override void OnPressed() { }
+            public override void OnCalled() { }
+
+            public Loop(string[] _) { }
 
             public override string ToString() =>
                 "loop";
@@ -194,7 +196,10 @@ namespace TextEngine.Demos
             public RandomSeed(int Seed) =>
                 this.Seed = Seed;
 
-            public override void OnPressed() =>
+            public RandomSeed(string[] args) =>
+                Seed = int.Parse(args[1]);
+
+            public override void OnCalled() =>
                 Random.Seed = Seed;
 
             public override string ToString() =>
