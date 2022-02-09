@@ -23,18 +23,29 @@ namespace TextEngine.Demos
         internal static string DemoAnswer;
         internal static Demo Instance { get; private set; }
         private static int LastQuestionIndex = 0;
-        private readonly DemoInputType[] Inputs;
+        private readonly List<DemoInputType> Inputs;
 
-        public Demo(DemoInputType[] inputs) => Inputs = inputs;
-        public Demo(List<DemoInputType> inputs) => Inputs = inputs.ToArray();
+        public DemoInputType this[int index]
+        {
+            get => Inputs[index];
+            set => Inputs[index] = value;
+        }
+
+        public void Add(DemoInputType input) => Inputs.Add(input);
+        public void Remove(int index) => Inputs.RemoveAt(index);
+
+        public Demo() => Inputs = new();
+        public Demo(DemoInputType[] inputs) => Inputs = inputs.ToList();
+        public Demo(List<DemoInputType> inputs) => Inputs = inputs;
 
         public Demo(string file)
         {
             string[] UnparsedDemo = File.ReadAllLines(file);
-            Inputs = new DemoInputType[UnparsedDemo.Length];
+            Inputs = new ();
 
             for (int i = 0; i < UnparsedDemo.Length; i++)
             {
+                Inputs.Add(new Invalid(i, "Unknown error", new Exception()));
                 string[] Parameters = UnparsedDemo[i].Trim().Split(',');
                 try
                 {
@@ -55,7 +66,7 @@ namespace TextEngine.Demos
 
         internal string GetNextAnswer()
         {
-            for (int i = LastQuestionIndex; i < Inputs.Length; i++)
+            for (int i = LastQuestionIndex; i < Inputs.Count; i++)
             {
                 if (Inputs[i] is Question)
                 {
@@ -70,7 +81,7 @@ namespace TextEngine.Demos
         {
             Instance = this;
             DemoAnswer = GetNextAnswer();
-            for (int i = 0; i < Inputs.Length; i++)
+            for (int i = 0; i < Inputs.Count; i++)
             {
                 if (Inputs[i] is Loop)
                     i = 0;
@@ -89,7 +100,7 @@ namespace TextEngine.Demos
         public override string ToString()
         {
             string FinalString = "";
-            for (int i = 0; i < Inputs.Length; i++)
+            for (int i = 0; i < Inputs.Count; i++)
             {
                 FinalString += Inputs[i].ToString() + "\n";
             }

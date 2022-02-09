@@ -12,13 +12,7 @@ namespace TextEngine.Demos
     {
         public static DemoRecorder Instance { get; private set; }
         private Stopwatch stopwatch;
-        public List<Demo.DemoInputType> DemoInputs = new();
-
-        public Demo Demo
-        {
-            get =>
-                new(DemoInputs);
-        }
+        public Demo Demo = new();
 
         public DemoRecorder()
         {
@@ -32,8 +26,8 @@ namespace TextEngine.Demos
 
         public override void KeyPress(ConsoleKey key)
         {
-            DemoInputs.Add(new Demo.Delay(stopwatch.ElapsedMilliseconds));
-            DemoInputs.Add(new Demo.KeyPress(key));
+            Demo.Add(new Demo.Delay(stopwatch.ElapsedMilliseconds));
+            Demo.Add(new Demo.KeyPress(key));
             stopwatch.Restart();
         }
 
@@ -46,7 +40,7 @@ namespace TextEngine.Demos
             if (Instance is null)
                 return;
 
-            Instance.DemoInputs.Add(input);
+            Instance.Demo.Add(input);
         }
     }
 }
