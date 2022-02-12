@@ -106,10 +106,10 @@ namespace TextEngine
             Game.GameObjects.Remove(this);
         }
 
-        public abstract void OnCollision(GameObject collision, Vector2D displacement);
+        public virtual void OnCollision(GameObject collision, Vector2D displacement) { }
 
-        public abstract void Update();
+        public virtual void Update() { }
 
-        public abstract void KeyPress(ConsoleKey key);
+        public virtual void KeyPress(ConsoleKey key) { }
     }
 }

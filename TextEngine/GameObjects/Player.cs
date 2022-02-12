@@ -61,11 +61,6 @@ namespace TextEngine.GameObjects
             Move(movement);
         }
 
-        public override void OnCollision(GameObject type, Vector2D Displacement)
-        {
-            
-        }
-
         public override void Update()
         {
             //Game.ToolBar = $"{Position} {Render.FPS,-10} {Game.CallsPerSecond} {StressTest.items}";
