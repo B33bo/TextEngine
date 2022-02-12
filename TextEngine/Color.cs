@@ -242,7 +242,7 @@ namespace TextEngine
         }
     }
 
-    internal static class ConsoleColourManager
+    public static class ConsoleColourManager
     {
         private const int STD_OUTPUT_HANDLE = -11;
         private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;

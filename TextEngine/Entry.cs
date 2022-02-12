@@ -43,7 +43,7 @@ namespace TextEngine
             Game.OnQuitGame += () =>
             { Console.WriteLine(DemoRecorder.Instance.Demo.ToString()); };
 
-            Game.Start(new Demo(@"C:\Users\B33bo\Desktop\ExampleDemo.txt"));
+            //Game.Start();
         }
 
         static void DASD()

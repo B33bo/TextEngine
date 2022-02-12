@@ -9,7 +9,18 @@ namespace TextEngine
 {
     public static class Random
     {
-        public static int Seed { get => _seed; set { random = new(value); _seed = value; DemoRecorder.TryAdd(new Demo.RandomSeed(value)); } }
+        private static bool InitialisedRandom = false;
+        public static int Seed
+        {
+            get => _seed;
+            set
+            {
+                random = new(value);
+                _seed = value;
+                DemoRecorder.TryAdd(new Demo.RandomSeed(value));
+                InitialisedRandom = true;
+            }
+        }
 
         private static int _seed;
         private static System.Random random = new();
@@ -20,13 +31,14 @@ namespace TextEngine
             Seed = new System.Random().Next();
         }
 
-        public static int Int(int a, int b)
-        {
-            return random.Next(a, b);
-        }
+        public static int Int(int a, int b) =>
+            random.Next(a, b);
 
         public static Color Color()
         {
+            if (!InitialisedRandom)
+                ResetRandom();
+
             Color c = new();
 
             byte[] colourData = new byte[3];
@@ -40,6 +52,9 @@ namespace TextEngine
 
         public static double Double()
         {
+            if (!InitialisedRandom)
+                ResetRandom();
+
             return random.NextDouble();
         }
 
@@ -65,26 +80,41 @@ namespace TextEngine
 
         public static Vector2D Vector(Vector2D origin, Vector2D end)
         {
+            if (!InitialisedRandom)
+                ResetRandom();
+
             return new(Random.Int(origin.X, end.X), Random.Int(origin.Y, end.Y));
         }
 
         public static Scale Scale(Scale min, Scale max)
         {
+            if (!InitialisedRandom)
+                ResetRandom();
+
             return new(Random.Int(min.width, max.width), Random.Int(min.height, max.height));
         }
 
         public static T Choice<T>(T[] array)
         {
+            if (!InitialisedRandom)
+                ResetRandom();
+
             return array[random.Next(array.Length)];
         }
 
         public static T Choice<T>(List<T> list)
         {
+            if (!InitialisedRandom)
+                ResetRandom();
+
             return list[random.Next(list.Count)];
         }
 
         public static char Choice(string str)
         {
+            if (!InitialisedRandom)
+                ResetRandom();
+
             return str[random.Next(str.Length)];
         }
     }

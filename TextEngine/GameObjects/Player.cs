@@ -50,6 +50,11 @@ namespace TextEngine.GameObjects
 
             if (key == ConsoleKey.C)
             {
+                Color = Random.Color();
+            }
+
+            if (key == ConsoleKey.Q)
+            {
                 Game.Stop();
             }
 
