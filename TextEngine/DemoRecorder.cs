@@ -13,6 +13,9 @@ namespace TextEngine.Demos
         public static DemoRecorder Instance { get; private set; }
         private Stopwatch stopwatch;
         public Demo Demo = new();
+        public event DemoInputHandler InputRevieved;
+
+        public delegate void DemoInputHandler(Demo.DemoInputType type);
 
         public DemoRecorder()
         {
@@ -27,19 +30,27 @@ namespace TextEngine.Demos
         public override void KeyPress(ConsoleKey key)
         {
             Demo.Add(new Demo.Delay(stopwatch.ElapsedMilliseconds));
+            TryInvokeNewDemoAdd(Demo[^1]);
+
             Demo.Add(new Demo.KeyPress(key));
+            TryInvokeNewDemoAdd(Demo[^1]);
             stopwatch.Restart();
         }
 
-        public override void OnCollision(GameObject collision, Vector2D displacement) { }
+        private void TryInvokeNewDemoAdd(Demo.DemoInputType type)
+        {
+            if (InputRevieved == null)
+                return;
 
-        public override void Update() { }
+            InputRevieved.Invoke(type);
+        }
 
         public static void TryAdd(Demo.DemoInputType input)
         {
             if (Instance is null)
                 return;
 
+            Instance.TryInvokeNewDemoAdd(input);
             Instance.Demo.Add(input);
         }
     }

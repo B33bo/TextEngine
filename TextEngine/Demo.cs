@@ -31,6 +31,12 @@ namespace TextEngine.Demos
             set => Inputs[index] = value;
         }
 
+        public DemoInputType this[Index index]
+        {
+            get => Inputs[index];
+            set => Inputs[index] = value;
+        }
+
         public void Add(DemoInputType input) => Inputs.Add(input);
         public void Remove(int index) => Inputs.RemoveAt(index);
 
