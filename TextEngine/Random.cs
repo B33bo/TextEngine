@@ -37,6 +37,9 @@ namespace TextEngine
         public static void Bytes(byte[] buffer) =>
             random.NextBytes(buffer);
 
+        public static bool Bool() =>
+            random.Next(0, 2) == 0;
+
         public static Color Color()
         {
             if (!InitialisedRandom)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TextEngine
 {
-    public abstract class GameObject
+    public class GameObject
     {
         public Texture texture;
 

@@ -29,11 +29,5 @@ namespace TextEngine
             HasCollision = false;
             Position = new(0, 0);
         }
-
-        public override void KeyPress(ConsoleKey key) { }
-
-        public override void OnCollision(GameObject collision, Vector2D displacement) { }
-
-        public override void Update() { }
     }
 }

@@ -55,6 +55,12 @@ namespace TextEngine
             CustomIndexer = null;
         }
 
+        public Texture(string s)
+        {
+            cells = GetCells(new string[] { s }, null, null, null);
+            CustomIndexer = null;
+        }
+
         public Texture(string[] s, Color[,] colour, Color[,] highlight)
         {
             cells = GetCells(s, colour, highlight, null);
@@ -112,8 +118,9 @@ namespace TextEngine
                     Color Highlight = UseHighlight ? highlight[y, x] : Color.Default;
                     TextFormatting Format = UseFormatting ? formatting[y, x] : TextFormatting.None;
 
-                    if (lines[x].Length < LengthOfCells)
+                    if (lines[y].Length < LengthOfCells)
                     {
+
                         //Something like this occured
                         /**
                          * ###

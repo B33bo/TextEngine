@@ -27,7 +27,7 @@ namespace TextEngine
             Player player = new();
             player.HasCollision = true;
 
-            Wall wall = new();
+            //Wall wall = new();
             //wall.Texture = new(GetCell);
 
             //Wall.instance = wall;
@@ -43,6 +43,7 @@ namespace TextEngine
             Game.OnQuitGame += () =>
             { Console.WriteLine(DemoRecorder.Instance.Demo.ToString()); };
 
+            Texture roadTexture = new("-   -   ");
             Game.Start();
         }
 

@@ -10,7 +10,7 @@ namespace TextEngine.Demos
 {
     public class Demo
     {
-        private static Dictionary<string, Type> _DemoInputTypes = new()
+        private static readonly Dictionary<string, Type> _DemoInputTypes = new()
         {
             { "delay", typeof(Delay) },
             { "input", typeof(KeyPress) },
@@ -156,7 +156,8 @@ namespace TextEngine.Demos
         {
             public string QuestionText = "";
 
-            public Question(string question) { QuestionText = question; }
+            public Question(string question) =>
+                QuestionText = question;
 
             public Question(string[] args) =>
                 QuestionText = args[1];
