@@ -65,30 +65,48 @@ namespace TextEngine
             {
                 try
                 {
-                    if (Game.GameObjects[i] == this)
+                    GameObject other = Game.GameObjects[i];
+
+                    if (other == this)
+                        continue;
+                    if (other is null)
                         continue;
 
-                    Vector2D OtherPos = Game.GameObjects[i].Position;
-                    Vector2D OtherPosBottomRight = OtherPos + Game.GameObjects[i].Scale;
+                    Vector2D OtherPos = other.Position;
+                    Vector2D OtherPosBottomRight = OtherPos + other.Scale;
 
-                    if (!Scale.IntersectsWith((newPos, newPos + Scale), (OtherPos, OtherPosBottomRight)))
+                    bool CurrentlyIntersectsWith = Scale.IntersectsWith((Position, Position + Scale), (OtherPos, OtherPosBottomRight));
+                    bool WillIntersectWith = Scale.IntersectsWith((newPos, newPos + Scale), (OtherPos, OtherPosBottomRight));
+
+                    if (CurrentlyIntersectsWith && !WillIntersectWith)
+                    {
+                        other.ExitCollision(this, other.Position - Position);
+                        if (this is null) //all blue :o
+                            continue;
+                        ExitCollision(other, Position - other.Position);
+                    }
+
+                    if (!WillIntersectWith)
+                        continue;
+
+                    if (CurrentlyIntersectsWith)
                         continue;
 
                     //Object in the way
 
-                    Game.GameObjects[i].OnCollision(this, Game.GameObjects[i].Position - Position);
+                    other.OnCollision(this, other.Position - Position);
 
                     //OnCollision() could remove the object
-                    if (Game.GameObjects.Count <= i)
+                    if (other is null)
                         continue;
 
-                    OnCollision(Game.GameObjects[i], Position - Game.GameObjects[i].Position);
+                    OnCollision(other, Position - other.Position);
 
                     //OnCollision() could remove the object
-                    if (Game.GameObjects.Count <= i)
+                    if (other is null)
                         continue;
 
-                    if (Game.GameObjects[i].HasCollision && HasCollision)
+                    if (other.HasCollision && HasCollision)
                         //Both objects have collision
                         return;
                 }
@@ -107,6 +125,8 @@ namespace TextEngine
         }
 
         public virtual void OnCollision(GameObject collision, Vector2D displacement) { }
+
+        public virtual void ExitCollision(GameObject collision, Vector2D displacement) { }
 
         public virtual void Update() { }
 

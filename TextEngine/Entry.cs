@@ -19,6 +19,7 @@ namespace TextEngine
 
             Game.AddObject(new DemoRecorder());
             Game.AddObject(new Player());
+            Game.AddObject(wall);
 
 
             Game.OnQuitGame += () =>

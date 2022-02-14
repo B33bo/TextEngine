@@ -31,7 +31,7 @@ namespace TextEngine.GameObjects
                 _ => Vector2D.Zero,
             };
 
-            Position += movement;
+            Move(movement);
         }
     }
 }

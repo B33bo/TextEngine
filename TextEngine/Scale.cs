@@ -73,6 +73,11 @@ namespace TextEngine
             return !(a == b);
         }
 
+        public static implicit operator Vector2D(Scale a)
+        {
+            return new(a.width, a.height);
+        }
+
         public static bool IntersectsWith((Vector2D topLeft, Vector2D BottomRight) a, (Vector2D topLeft, Vector2D BottomRight) b)
         {
             //One square is above the other

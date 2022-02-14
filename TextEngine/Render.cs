@@ -104,7 +104,12 @@ namespace TextEngine
                         line[renderPos.X] = obj.texture[i, j].Character;
                         frame[renderPos.Y] = line.ToString();
 
-                        Cell cell = new Cell(obj.texture[i, j].Character, obj.texture[i,j].Color, obj.texture[i,j].Highlight );//obj.texture[i, j];
+                        Cell cell = obj.texture[i, j];
+
+                        if (cell.Highlight == Color.Default)
+                            //Transparency
+                            cell.Highlight = colours[renderPos.X, renderPos.Y].cell.Color;
+
                         colours[renderPos.X, renderPos.Y] = (cell, obj.RenderOrder);
                     }
                 }

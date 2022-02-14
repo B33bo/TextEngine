@@ -15,21 +15,8 @@ namespace TextEngine.GameObjects
 
         public Wall()
         {
-            HasCollision = true;
-            Color[] colors = new Color[] { Color.Default, Color.Blue };
-            texc = new(
-            new string[] { "ab", "cd", "ef", "gh" },
-            null,
-            null,
-            new TextFormatting[,] { { TextFormatting.Underline, TextFormatting.Inverse }, { TextFormatting.Bold, TextFormatting.Inverse }, { TextFormatting.Bold, TextFormatting.Inverse }, { TextFormatting.Bold, TextFormatting.Inverse } });
-
-            Scale = new(2, 4);
-            texture = texc;
-            Position = new(5, 5);
-            //Character = '#';
-            RenderOrder = 2;
-
-            //Color = Color.Red;
+            Character = '!';
+            Position = Random.Vector(Vector2D.Zero, Game.Screen);
         }
 
         public override void KeyPress(ConsoleKey key)
