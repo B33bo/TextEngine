@@ -166,5 +166,10 @@ namespace TextEngine
         {
             get => new(Console.WindowWidth, Console.WindowHeight);
         }
+
+        public static Vector2D GameMiddleCenter
+        {
+            get => new(Game.Screen.width / 2, Game.Screen.height / 2);
+        }
     }
 }

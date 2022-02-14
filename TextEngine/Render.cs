@@ -70,41 +70,45 @@ namespace TextEngine
             //Stores colour data
             (Cell cell, uint renderOrder)[,] colours = new (Cell, uint)[Game.Screen.width, Game.Screen.height];
 
-            try
+            for (int objNumber = 0; objNumber < Game.GameObjects.Count; objNumber++)
             {
-                foreach (GameObject obj in Game.GameObjects)
+                if (objNumber >= Game.GameObjects.Count)
+                    continue;
+
+                GameObject obj = Game.GameObjects[objNumber];
+
+                if (obj is null)
+                    continue;
+
+                if (obj.Invisible)
+                    continue;
+
+                //The object position relative to the camera
+                Vector2D drawPos = obj.Position - Camera.Instance.Position;
+
+                for (int i = 0; i < obj.Scale.width; i++)
                 {
-                    if (obj.Invisible)
-                        continue;
-
-                    //The object position relative to the camera
-                    Vector2D drawPos = obj.Position - Camera.Instance.Position;
-
-                    for (int i = 0; i < obj.Scale.width; i++)
+                    for (int j = 0; j < obj.Scale.height; j++)
                     {
-                        for (int j = 0; j < obj.Scale.height; j++)
-                        {
-                            //Add the current part of the object to it's position. This is the Game cell we are drawing
-                            Vector2D renderPos = new(drawPos.X + i, drawPos.Y + j);
+                        //Add the current part of the object to it's position. This is the Game cell we are drawing
+                        Vector2D renderPos = new(drawPos.X + i, drawPos.Y + j);
 
-                            if (!renderPos.InScreen())
-                                //It's offscreen
-                                continue;
+                        if (!renderPos.InScreen())
+                            //It's offscreen
+                            continue;
 
-                            if (obj.RenderOrder < colours[renderPos.X, renderPos.Y].renderOrder)
-                                continue;
+                        if (obj.RenderOrder < colours[renderPos.X, renderPos.Y].renderOrder)
+                            continue;
 
-                            StringBuilder line = new(frame[renderPos.Y]);
-                            line[renderPos.X] = obj.texture[i, j].Character;
-                            frame[renderPos.Y] = line.ToString();
+                        StringBuilder line = new(frame[renderPos.Y]);
+                        line[renderPos.X] = obj.texture[i, j].Character;
+                        frame[renderPos.Y] = line.ToString();
 
-                            Cell cell = obj.texture[i, j];
-                            colours[renderPos.X, renderPos.Y] = (cell, obj.RenderOrder);
-                        }
+                        Cell cell = new Cell(obj.texture[i, j].Character, obj.texture[i,j].Color, obj.texture[i,j].Highlight );//obj.texture[i, j];
+                        colours[renderPos.X, renderPos.Y] = (cell, obj.RenderOrder);
                     }
                 }
             }
-            catch (InvalidOperationException) { }
 
             //At this point, we have an uncoloured frame, and a list of colour data
             //Simply merge them

@@ -3,66 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextEngine;
 
 namespace TextEngine.GameObjects
 {
     //Player is only used for testing purposes
     internal class Player : GameObject
     {
+        public Player Instance { get; private set; }
         public Player()
         {
-            Formatting = TextFormatting.Underline | TextFormatting.Inverse;
-            HasCollision = true;
-            //texture = new(new string[] { "c" }, new Color[,] { { Color.Default } }, new Color[,] { { Color.Red } });
-
+            Instance = this;
+            Position = Vector2D.GameMiddleCenter;
+            Character = 'O';
+            RenderOrder = 1;
         }
 
         public override void KeyPress(ConsoleKey key)
         {
-            Vector2D movement = new();
-
-            if (key == ConsoleKey.W)
+            Vector2D movement;
+            movement = key switch
             {
-                movement.Y-=1;
-                Character = '^';
-            }
-            if (key == ConsoleKey.S)
-            {
-                movement.Y+=1;
-                Character = 'V';
-            }
+                ConsoleKey.W => Vector2D.Up,
+                ConsoleKey.A => Vector2D.Left,
+                ConsoleKey.S => Vector2D.Down,
+                ConsoleKey.D => Vector2D.Right,
+                _ => Vector2D.Zero,
+            };
 
-            if (key == ConsoleKey.A)
-            {
-                movement.X -= 1;
-                Character = '<';
-            }
-            if (key == ConsoleKey.D)
-            {
-                movement.X += 1;
-                Character = '>';
-            }
-
-            if (key == ConsoleKey.F)
-            {
-                Game.ToolBar += " " + Random.String(5);
-            }
-
-            if (key == ConsoleKey.C)
-            {
-                Color = Random.Color();
-            }
-
-            if (key == ConsoleKey.Q)
-            {
-                Game.Stop();
-            }
-
-            Move(movement);
-        }
-
-        public override void Update()
-        {
+            Position += movement;
         }
     }
 }

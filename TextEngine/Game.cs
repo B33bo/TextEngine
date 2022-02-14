@@ -214,6 +214,10 @@ namespace TextEngine
                 if (GameObjects.Count <= i)
                     //a gameobject got killed
                     break;
+
+                if (GameObjects[i] is null)
+                    continue;
+
                 GameObjects[i].KeyPress(key);
             }
         }
