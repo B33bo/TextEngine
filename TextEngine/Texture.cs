@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TextEngine.Colors;
+
 namespace TextEngine
 {
     public struct Texture
@@ -79,10 +81,14 @@ namespace TextEngine
             cells = null;
         }
 
-        public void SetCellColor(int x, int y, Color colour)
-        {
+        public void SetCellColor(int x, int y, Color colour) =>
             cells[x, y].Color = colour;
-        }
+
+        public void SetCellHighlight(int x, int y, Color colour) =>
+            cells[x, y].Highlight = colour;
+
+        public void SetCellFormatting(int x, int y, TextFormatting formatting) =>
+            cells[x, y].Formatting = formatting;
 
         public void SetCell(int x, int y, Cell cell)
         {
@@ -118,7 +124,7 @@ namespace TextEngine
                     Color Highlight = UseHighlight ? highlight[y, x] : Color.Default;
                     TextFormatting Format = UseFormatting ? formatting[y, x] : TextFormatting.None;
 
-                    if (lines[y].Length < LengthOfCells)
+                    if (lines[y].Length <= x)
                     {
 
                         //Something like this occured
@@ -174,7 +180,6 @@ namespace TextEngine
         }
 
         public static implicit operator Texture(Cell[,] c) => new(c);
-
         public static implicit operator Texture(string[] s) => new(s);
         public static implicit operator Texture(char s) => new(s);
     }
@@ -215,10 +220,5 @@ namespace TextEngine
             this.Highlight = Highlight;
             Formatting = formatting;
         }
-
-        public void SetColor(Color Color) => this.Color = Color;
-        public void SetHighlight(Color Highlight) => this.Highlight = Highlight;
-        public void SetCharacter(char Character) => this.Character = Character;
-        public void SetFormatting(TextFormatting formatting) => this.Formatting = formatting;
     }
 }

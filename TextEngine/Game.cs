@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TextEngine.Demos;
+using TextEngine.Colors;
 
 namespace TextEngine
 {
@@ -85,7 +86,6 @@ namespace TextEngine
 
         private static void Initialise()
         {
-            Random.ResetRandom();
             ConsoleColourManager.Enable();
             Console.OutputEncoding = new UnicodeEncoding();
             Timer = new();
@@ -131,6 +131,7 @@ namespace TextEngine
         public static void Start()
         {
             //Input thread gets the user key press
+            RandomNG.ResetRandom();
             InputThread = new(InputTick);
             Initialise();
         }
@@ -197,7 +198,9 @@ namespace TextEngine
             while (ThreadsRunning > 1) ;
 
             Console.Clear();
-            if (OnQuitGame != null)
+            Console.SetCursorPosition(0, 0);
+
+            if (OnQuitGame is not null)
                 OnQuitGame.Invoke();
         }
 

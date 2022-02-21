@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TextEngine;
 
-namespace TextEngine.GameObjects
+namespace TextEngine.Debug
 {
     //Player is only used for testing purposes
     internal class Player : GameObject
@@ -30,6 +30,9 @@ namespace TextEngine.GameObjects
                 ConsoleKey.D => Vector2D.Right,
                 _ => Vector2D.Zero,
             };
+
+            if (key == ConsoleKey.C)
+                Game.Stop();
 
             Move(movement);
         }

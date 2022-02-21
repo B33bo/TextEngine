@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextEngine.Colors;
 
 namespace TextEngine
 {
@@ -108,7 +109,7 @@ namespace TextEngine
 
                         if (cell.Highlight == Color.Default)
                             //Transparency
-                            cell.Highlight = colours[renderPos.X, renderPos.Y].cell.Color;
+                            cell.Highlight = colours[renderPos.X, renderPos.Y].cell.Highlight;
 
                         colours[renderPos.X, renderPos.Y] = (cell, obj.RenderOrder);
                     }

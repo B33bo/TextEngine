@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TextEngine.GameObjects
+namespace TextEngine.Debug
 {
     //Wall is only used for testing purposes
     internal class Wall : GameObject
@@ -16,19 +16,13 @@ namespace TextEngine.GameObjects
         public Wall()
         {
             Character = '!';
-            Position = Random.Vector(Vector2D.Zero, Game.Screen);
+            Position = RandomNG.Vector(Vector2D.Zero, Game.Screen);
         }
 
         public override void KeyPress(ConsoleKey key)
         {
             if (key == ConsoleKey.Spacebar)
-                Scale += new Scale(1, 1);
+                Position = RandomNG.Vector(Vector2D.Zero, Game.Screen);
         }
-
-        public override void OnCollision(GameObject type, Vector2D displacement)
-        { }
-
-        public override void Update()
-        { }
     }
 }

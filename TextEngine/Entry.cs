@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using TextEngine.GameObjects;
 using TextEngine.Demos;
-namespace TextEngine
+using TextEngine.Colors;
+
+namespace TextEngine.Debug
 {
     //EntryPoint is only used for testing purposes.
     internal class EntryPoint
@@ -10,21 +11,23 @@ namespace TextEngine
 
         static void Main(string[] args)
         {
+            Console.WriteLine(new Color(100, 127, 127).ToHSV());
             ConsoleColourManager.Enable();
             Console.ResetColor();
 
-            Game.Screen = new(10, 10);
+            Game.Screen = new(30, 15);
 
-            Wall wall = new();
+            GameObject glitchObject = new();
+            glitchObject.Position = new(2, 2);
+            glitchObject.texture = new Texture(new string[] { "d\r", "\re" });
+            glitchObject.Scale = new(5, 5);
 
-            Game.AddObject(new DemoRecorder());
-            Game.AddObject(new Player());
-            Game.AddObject(wall);
-
+            Game.AddObject(glitchObject);
 
             Game.OnQuitGame += () =>
             { Console.WriteLine(DemoRecorder.Instance.Demo.ToString()); };
-            Game.Start();
+            Game.Start(new Demo(@"C:\Users\B33bo\Desktop\w.txt"));
+            //Game.Start();
         }
     }
 }

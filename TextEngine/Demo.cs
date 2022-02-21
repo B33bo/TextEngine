@@ -116,20 +116,20 @@ namespace TextEngine.Demos
         #region Input Types
         public class Delay : DemoInputType
         {
-            public int Milliseconds;
+            public int Ticks;
 
-            public Delay(long MS) => Milliseconds = (int)MS;
+            public Delay(long MS) => Ticks = (int)MS;
 
             public Delay(string[] args) =>
-                Milliseconds = int.Parse(args[1]);
+                Ticks = int.Parse(args[1]);
 
             public override void OnCalled()
             {
-                Thread.Sleep(Milliseconds);
+                Thread.Sleep(TimeSpan.FromTicks(Ticks));
             }
 
             public override string ToString() =>
-                $"delay,{Milliseconds}";
+                $"delay,{Ticks}";
         }
 
         public class KeyPress : DemoInputType
@@ -139,8 +139,13 @@ namespace TextEngine.Demos
             public KeyPress(ConsoleKey key) => Key = key;
             public KeyPress(char key) => Key = (ConsoleKey)(key.ToString().ToUpper()[0]);
 
-            public KeyPress(string[] args) =>
-                Key = (ConsoleKey)(args[1].ToUpper()[0]);
+            public KeyPress(string[] args)
+            {
+                if (args[1].ToLower() == "spacebar")
+                    Key = ConsoleKey.Spacebar;
+                else
+                    Key = (ConsoleKey)(args[1].ToUpper()[0]);
+            }
 
 
             public override void OnCalled()
@@ -218,7 +223,7 @@ namespace TextEngine.Demos
                 Seed = int.Parse(args[1]);
 
             public override void OnCalled() =>
-                Random.Seed = Seed;
+                RandomNG.Seed = Seed;
 
             public override string ToString() =>
                 $"seed,{Seed}";

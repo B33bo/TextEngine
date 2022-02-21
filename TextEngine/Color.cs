@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TextEngine
+namespace TextEngine.Colors
 {
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
     public struct Color
@@ -65,7 +65,7 @@ namespace TextEngine
             }
         }
 
-        public new string ToString()
+        public override string ToString()
         {
             //To hexcode
             string rComponent = R.ToString("x").PadLeft(2, '0');
@@ -92,6 +92,116 @@ namespace TextEngine
                 return "";
 
             return $"{START_COLOUR}[{type};2;{R};{G};{B}m";
+        }
+
+        public (double hue, double sat, double val) ToHSV()
+        {
+            double delta, min;
+            (double hue, double sat, double val) hsv = (0, 0, 0);
+
+            min = Math.Min(Math.Min(R, G), B);
+            hsv.val = Math.Max(Math.Max(R, G), B);
+            delta = hsv.val - min;
+
+            if (hsv.val == 0.0)
+                hsv.sat = 0;
+            else
+                hsv.sat = delta / hsv.val;
+
+            if (hsv.sat == 0)
+                hsv.hue = 0.0;
+
+            else
+            {
+                if (R == hsv.val)
+                    hsv.hue = (G - B) / delta;
+                else if (G == hsv.val)
+                    hsv.hue = 2 + (B - R) / delta;
+                else if (B == hsv.val)
+                    hsv.hue = 4 + (R - G) / delta;
+
+                hsv.hue *= 60;
+
+                if (hsv.hue < 0.0)
+                    hsv.hue += 360;
+            }
+
+            hsv.val /= byte.MaxValue;
+            return hsv;
+        }
+
+        public static Color ToRGB(double hue, double sat, double val) =>
+            ToRGB((hue, sat, val));
+
+        public static Color ToRGB((double hue, double sat, double val) HSV)
+        {
+            Color color = new();
+
+            if (HSV.sat == 0)
+            {
+                color.R = (byte)(HSV.val * 255);
+                color.G = (byte)(HSV.val * 255);
+                color.B = (byte)(HSV.val * 255);
+            }
+            else
+            {
+                int i;
+                double f, p, q, t;
+
+                if (HSV.hue == 360)
+                    HSV.hue = 0;
+                else
+                    HSV.hue /= 60;
+
+                i = (int)Math.Truncate(HSV.hue);
+                f = HSV.hue - i;
+
+                p = HSV.val * (1.0 - HSV.sat);
+                q = HSV.val * (1.0 - (HSV.sat * f));
+                t = HSV.val * (1.0 - (HSV.sat * (1.0 - f)));
+
+                switch (i)
+                {
+                    case 0:
+                        color.R = (byte)(HSV.val * 255);
+                        color.G = (byte)(t * 255);
+                        color.B = (byte)(p * 255);
+                        break;
+
+                    case 1:
+                        color.R = (byte)(q * 255);
+                        color.G = (byte)(HSV.val * 255);
+                        color.B = (byte)(p * 255);
+                        break;
+
+                    case 2:
+                        color.R = (byte)(p * 255);
+                        color.G = (byte)(HSV.val * 255);
+                        color.B = (byte)(t * 255);
+                        break;
+
+                    case 3:
+                        color.R = (byte)(p * 255);
+                        color.G = (byte)(q * 255);
+                        color.B = (byte)(HSV.val * 255);
+                        break;
+
+                    case 4:
+                        color.R = (byte)(t * 255);
+                        color.G = (byte)(p * 255);
+                        color.B = (byte)(HSV.val * 255);
+                        break;
+
+                    default:
+                        color.R = (byte)(HSV.val * 255);
+                        color.G = (byte)(p * 255);
+                        color.B = (byte)(q * 255);
+                        break;
+                }
+
+            }
+
+            return color;
         }
 
         public static string ToConsoleColor(Color foreground, Color background)
@@ -125,7 +235,7 @@ namespace TextEngine
             G = Math.Clamp(G, 0, 255);
             B = Math.Clamp(B, 0, 255);
 
-            return new((byte)R, (byte)G, (byte)B);
+            return new((byte)(R * 255), (byte)(G * 255), (byte)(B * 255));
         }
 
         public static Color operator -(Color a, Color b)
@@ -138,7 +248,7 @@ namespace TextEngine
             G = Math.Clamp(G, 0, 255);
             B = Math.Clamp(B, 0, 255);
 
-            return new((byte)R, (byte)G, (byte)B);
+            return new((byte)(R * 255), (byte)(G * 255), (byte)(B * 255));
         }
 
         public static Color operator +(Color a, int b)

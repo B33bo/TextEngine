@@ -29,12 +29,12 @@ namespace TextEngine.Demos
 
         public override void KeyPress(ConsoleKey key)
         {
-            Demo.Add(new Demo.Delay(stopwatch.ElapsedMilliseconds));
+            Demo.Add(new Demo.Delay(stopwatch.ElapsedTicks));
+            stopwatch.Restart();
             TryInvokeNewDemoAdd(Demo[^1]);
 
             Demo.Add(new Demo.KeyPress(key));
             TryInvokeNewDemoAdd(Demo[^1]);
-            stopwatch.Restart();
         }
 
         private void TryInvokeNewDemoAdd(Demo.DemoInputType type)

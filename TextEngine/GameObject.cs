@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TextEngine.Colors;
+
 namespace TextEngine
 {
     public class GameObject
@@ -118,6 +120,9 @@ namespace TextEngine
 
             Position += movementVector;
         }
+
+        public void CheckCollision() =>
+            Move(Vector2D.Zero);
 
         public void Destroy()
         {
